@@ -5,6 +5,12 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="com.google.appengine.api.users.User" %>
+<%@ page import="com.google.appengine.api.users.UserService" %>
+<%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
+<%@page import="java.util.LinkedHashMap"%>
+<%@page import="org.json.simple.JSONValue"%>
+<%@page import="org.json.simple.JSONArray"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -67,69 +73,8 @@
                 $(trs).detach();
                 $('#tbodySort').append(trs);
             }
-            var timeout_;
-            // This is called with the results from from FB.getLoginStatus().
-            function statusChangeCallback(response) {
-                if (response.status === 'connected') {
-                    try{
-                        clearTimeout(timeout_);
-                    }catch(e){}
-                    get_fb('me', getChild);
-                } else if (response.status === 'not_authorized') {
-
-                } else {
-
-                }
-            }
-            
-            function checkLoginState() {
-                FB.getLoginStatus(function(response) {
-                    statusChangeCallback(response);
-                });
-
-                timeout_ = setTimeout(function() {
-                    getHash();
-                }, 3500);
-            }
-            $(document).ready(function() {
-                $('#content').html("Sedang memproses data...");
-                window.fbAsyncInit = function() {
-                    FB.init({
-                        appId: '1519572904939148',
-                        xfbml: true,
-                        cookie: true,
-                        version: 'v2.0',
-                        status: true
-                    });
-                    checkLoginState();
-                };
-                // Load the SDK asynchronously
-                (function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id))
-                        return;
-                    js = d.createElement(s);
-                    js.id = id;
-                    js.src = "//connect.facebook.net/en_US/sdk.js";
-                    fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));
-            <%--userAccount = {email: "khairul.anshar@gmail.com"
-                , first_name: "Khairul"
-                , gender: "male"
-                , id: "10152397276159760"
-                , last_name: "Anshar"
-                , link: "https://www.facebook.com/app_scoped_user_id/10152397276159760/"
-                , locale: "en_US"
-                , name: "Khairul Anshar"
-                , timezone: 8
-                , updated_time: "2014-07-23T06:12:43+0000"
-                , verified: true};
-            fb_cache["me"] = userAccount;
-            get_fb('me', getChild);--%>
-            });
 
             var getChild = function(id, res) {
-                $("#loginFBbutton").hide();
                 fb_cache[id] = res;
                 $.ajax({
                     url: "/action?form_action=cekauth&session=" + Math.random()
@@ -261,8 +206,8 @@
                     $('#content').show();
                     var tblb = $("<table>").appendTo($('#content'));
                     var thead = $("<thead>").appendTo(tblb);
+                    var tfoot = thead;//$("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
                     var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
-                    var tfoot = $("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
                     var tblhtr = $("<tr>").appendTo(thead);
                     $("<th>").text("No.").appendTo(tblhtr).click(function() {
                         sort(0);
@@ -307,12 +252,12 @@
                                 }
                             }));
 
-                            pdet.append($("<b>").css("color", "#9197a3").css("font-size","10px").html("&nbsp;-&nbsp;"));
+                            pdet.append($("<b>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;"));
                             pdet.append($("<a>").attr("class", "classa").attr("href", "#0." + input_ + "." + replaceSpecial(data.posisi) + "." + data.posisi).text("Lihat Kandidat"));
                             tddet.append(divDet);
                         }
                         if (type == "write") {
-                            tblhtr = $("<tr>").css("background-color","#CFE0F1").appendTo(tfoot);
+                            tblhtr = $("<tr>").css("background-color", "#CFE0F1").appendTo(tfoot);
                             var tddet0 = $("<td>").appendTo(tblhtr).attr("colspan", 3);
                             var tddet = $("<p>").hide().appendTo(tddet0);
                             var pdiv = $("<span>").hide();
@@ -329,7 +274,7 @@
                                     input2x.jqte();
                                     pdiv.html("");
                                     pdiv.show();
-                                    pdiv.append($("<span>").css("color", "#9197a3").css("font-size","10px").html("&nbsp;-&nbsp;"));
+                                    pdiv.append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;"));
                                     pdiv.append($("<a>").attr("class", "classa").attr("href", "javascript:").text("Simpan").click(function() {
                                         if (input.val().length == 0
                                                 || input2x.val().length == 0) {
@@ -412,8 +357,8 @@
                     $('#content').show();
                     var tblb = $("<table>").appendTo($('#content'));
                     var thead = $("<thead>").appendTo(tblb);
+                    var tfoot = thead;//$("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
                     var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
-                    var tfoot = $("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
                     var tblhtr = $("<tr>").appendTo(thead);
                     $("<th>").text("No.").appendTo(tblhtr).click(function() {
                         sort(0);
@@ -499,12 +444,12 @@
                                 }
 
                             });
-                            var tbld = $("<table>");
-                            var trd = $("<tr>").css("background-color", "transparent").appendTo(tbld);
+                            var tbld = $("<table>").css("border", "0px");
+                            var trd = $("<tr>").css("border", "0px").css("background-color", "transparent").appendTo(tbld);
                             $("<td>").append(ax).appendTo(trd);
-                            $("<td>").append($("<span>").css("color", "#9197a3").css("font-size","10px").html("&nbsp;-&nbsp;")).appendTo(trd);
+                            $("<td>").append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
                             $("<td>").append(ax1).appendTo(trd);
-                            $("<td>").append($("<span>").css("color", "#9197a3").css("font-size","10px").html("&nbsp;-&nbsp;")).appendTo(trd);
+                            $("<td>").append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
                             $("<td>").append(ax2).appendTo(trd);
                             tdx.append($("<span>").html("<b>Nama</b>: " + data.kandidat)).append($("<br>"))
                                     .append($("<span>").html("<b>Deskripsi Umum</b>:" + data.desc)).append($("<br>"))
@@ -523,7 +468,7 @@
                         }
 
                         if (type == "write") {
-                            tblhtr = $("<tr>").css("background-color","#CFE0F1").appendTo(tfoot);
+                            tblhtr = $("<tr>").css("background-color", "#CFE0F1").appendTo(tfoot);
                             var td = $("<td>").appendTo(tblhtr).attr("colspan", "3");
                             var div = $("<p>").hide().appendTo(td);
                             var div0 = $("<p>").appendTo(td);
@@ -540,8 +485,8 @@
                                             .append($("<span>").html("<b>Deskripsi Umum</b>:<br>")).append(input1).append($("<br>"))
                                             .append($("<span>").html("<b>Detail</b>:")).append(input2);
                                     input2.jqte();
-                                    div1.append($("<span>").css("color", "#9197a3").css("font-size","10px").html("&nbsp;-&nbsp;"));
-                                    div1.append($("<a>").attr("class", "classa").text("Simpan...").click(function() {
+                                    div1.append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;"));
+                                    div1.append($("<a>").attr("href", "javascript:").attr("class", "classa").text("Simpan").click(function() {
                                         if (input.val().length == 0
                                                 || input1.val().length == 0
                                                 || input2.val().length == 0) {
@@ -589,14 +534,6 @@
                     }
                 } catch (e) {
                 }
-            }
-            function get_fb(id, getChild) {
-                if (fb_cache[id]) {
-                    return getChild(id, fb_cache[id]);
-                }
-                FB.api('/' + id, function(res) {
-                    getChild(id, res);
-                });
             }
             function getMyComment(td, dept, namaCalon, td_, i, ii) {
                 td.html("Sedang Mengambil Data...");
@@ -696,7 +633,7 @@
                         //$(this).html("Petunjuk:");
                     }
                 });
-                td.append($("<span>").css("color", "#9197a3").css("font-size","10px").html("&nbsp;-&nbsp;"));
+                td.append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;"));
                 td.append($("<a>").attr("class", "classa").attr("href", "javascript:").text("Simpan").click(function() {
                     if (textarea.val().length == 0) {
                         alert("Silahkan sertakan Alasan Anda!");
@@ -864,16 +801,149 @@
         <hr><br>
 
         <div id="fb-root"></div>
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" id="loginFBbutton"></fb:login-button>
-    <div class="fb-like" data-href="http://www.kawalmenteri.org" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-    <br/>
-    <div><p id="navTop"></p></div>
-    <div id="content"></div>
-    <div><p id="navBottom"></p></div>
-    <br/><br/>
-    <div id="footerdiv"></div>
-    <br/><br/><br/><br/>
+        <script>(function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id))
+                    return;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1519572904939148&version=v2.0";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+
+            var timeout_;
+            function get_fb(id, getChild) {
+                try {
+                    clearTimeout(timeout_);
+                    $("#divLogin").hide();
+                    $("#loginFBbutton").hide();
+                } catch (e) {
+                }
+                if (fb_cache[id]) {
+                    return getChild(id, fb_cache[id]);
+                }
+                FB.api('/' + id, function(res) {
+                    getChild(id, res);
+                });
+            }
+            // This is called with the results from from FB.getLoginStatus().
+            function statusChangeCallback(response) {
+                if (response.status === 'connected') {
+                    get_fb('me', getChild);
+                } else if (response.status === 'not_authorized') {
+                } else {
+                }
+            }
+            function checkLoginState() {
+                FB.getLoginStatus(function(response) {
+                    statusChangeCallback(response);
+                });
+                timeout_ = setTimeout(function() {
+                    getHash();
+                }, 3500);
+            }
+            function signinCallback(authResult) {
+                if (authResult['status']['signed_in']) {
+                    // Update the app to reflect a signed in user
+                    // Hide the sign-in button now that the user is authorized, for example:
+                    gapi.client.load('plus', 'v1', function() {
+                        var request = gapi.client.plus.people.get({
+                            'userId': 'me'
+                        });
+                        request.execute(function(resp) {
+                            userAccount = {email: resp.url
+                                , first_name: resp.name.familyName
+                                , gender: resp.gender
+                                , id: resp.id
+                                , last_name: resp.name.givenName
+                                , link: resp.url
+                                , locale: "en_US"
+                                , name: resp.displayName
+                                , timezone: 8
+                                , updated_time: ""
+                                , verified: true};
+                            fb_cache["me"] = userAccount;
+                            get_fb('me', getChild);
+                        });
+                    });
+
+                } else {
+                    // Update the app to reflect a signed out user
+                    // Possible error values:
+                    //   "user_signed_out" - User is signed-out
+                    //   "access_denied" - User denied access to your app
+                    //   "immediate_failed" - Could not automatically log in the user                    
+                }
+            }
+
+            $(document).ready(function() {
+                $('#content').html("Sedang memproses data...");
+                (function() {
+                    var po = document.createElement('script');
+                    po.type = 'text/javascript';
+                    po.async = true;
+                    po.src = 'https://apis.google.com/js/client:plusone.js';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(po, s);
+                })();
+                window.fbAsyncInit = function() {
+                    FB.init({
+                        appId: '1519572904939148',
+                        xfbml: true,
+                        cookie: true,
+                        version: 'v2.0',
+                        status: true
+                    });
+                    checkLoginState();
+                };
 
 
-</body>
+
+                // Load the SDK asynchronously
+            <%--userAccount = {email: "khairul.anshar@gmail.com"
+                , first_name: "Khairul"
+                , gender: "male"
+                , id: "10152397276159760"
+                , last_name: "Anshar"
+                , link: "https://www.facebook.com/app_scoped_user_id/10152397276159760/"
+                , locale: "en_US"
+                , name: "Khairul Anshar"
+                , timezone: 8
+                , updated_time: "2014-07-23T06:12:43+0000"
+                , verified: true};
+            fb_cache["me"] = userAccount;
+            get_fb('me', getChild);--%>
+            });
+        </script>
+
+        <div  draggable="false" style="vertical-align:bottom;margin:0px;padding:0px;">
+            <table style="vertical-align:bottom;margin:0px;padding:0px;">
+                <tr style="vertical-align:bottom;">
+                    <td id="divLogin" style="vertical-align:bottom;">
+                        <span id="signinButton">
+                            <span
+                                class="g-signin"
+                                data-callback="signinCallback"
+                                data-clientid="73076422642-bbnad8h46541i2mfn05gftuj98c8ed1c.apps.googleusercontent.com"
+                                data-cookiepolicy="single_host_origin"
+                                data-requestvisibleactions="http://schema.org/AddAction"
+                                data-scope="https://www.googleapis.com/auth/plus.login">
+                            </span>
+                        </span>
+                    </td>
+                    <td id="loginFBbutton" style="vertical-align:bottom;">
+                        <div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>
+                    </td>
+                </tr></table>            
+        </div>        
+        <div class="fb-like" data-href="http://www.kawalmenteri.org" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>                
+        <div><p id="navTop"></p></div>
+        <div id="content"></div>
+        <div><p id="navBottom"></p></div>
+        <br/><br/>
+        <div id="footerdiv"></div>
+        <br/><br/><br/><br/>
+
+
+    </body>
 </html>
