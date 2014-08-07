@@ -10,40 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Kawal Menteri</title>
-        <style type="text/css">
-            table {
-                border:1px solid white;
-                font-size:14px;
-                font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
-            }
-            td {
-                color:#000000;
-                vertical-align: top;
-                padding:2px;
-                white-space:initial;
-            }
-            th {
-                padding:2px;
-                background-color:#CFE0F1;
-                white-space:nowrap;
-                cursor: pointer;
-                padding:10px;
-            }
-            tr:nth-child(even) { background: #EEE;}
-            tr:nth-child(odd) { background:  #fbfbfb;}
-
-            .classa {
-                font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
-                font-size:12px;
-                text-decoration:none solid rgb(59, 89, 152);
-                color: rgb(59, 89, 152);
-                height: 14px;
-            }
-            .classa:hover {
-                text-decoration: underline;
-            }
-
-        </style>
+        <link href="main.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <link href="rateit/rateit.css" rel="stylesheet" type="text/css">
         <link href="rateit/content/bigstars.css" rel="stylesheet" type="text/css">
