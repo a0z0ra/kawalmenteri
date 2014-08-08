@@ -569,6 +569,7 @@ public class action extends HttpServlet {
                 String value = obj1.get("value").toString();
                 String value1 = obj1.get("value1").toString();
                 String value2 = obj1.get("value2").toString();
+                String menteri = obj1.get("menteri").toString();
                 Key typeKey = KeyFactory.createKey("kandidat" + type0, input);
                 // Run an ancestor query to ensure we see the most up-to-date
                 // view of the Greetings belonging to the selected Guestbook.
@@ -597,6 +598,7 @@ public class action extends HttpServlet {
                     psosisiEntity.setProperty("date", date);
                     psosisiEntity.setProperty("kandidat", value);
                     psosisiEntity.setProperty("desc", value1);
+                    psosisiEntity.setProperty("menteri", menteri);
                     psosisiEntity.setProperty("detail", new Text(value2));
                     if (email.equalsIgnoreCase("khairul.anshar@gmail.com")) {
                         psosisiEntity.setProperty("reviewed", "Y");

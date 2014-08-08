@@ -90,6 +90,7 @@
                         try {
                             if (result.userAccount) {
                                 userAccount = result.userAccount;
+                                setacct();
                             }
                             getHash();
                         } catch (e) {
@@ -253,7 +254,7 @@
                             }));
 
                             pdet.append($("<b>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;"));
-                            pdet.append($("<a>").attr("class", "classa").attr("href", "#0." + input_ + "." + replaceSpecial(data.posisi) + "." + data.posisi).text("Lihat Kandidat"));
+                            pdet.append($("<a>").attr("class", "classa").attr("href", "#0." + input_ + "." + replaceSpecial(data.posisi) + "." + escape(data.posisi)).text("Lihat Kandidat"));
                             tddet.append(divDet);
                         }
                         if (type == "write") {
@@ -363,7 +364,7 @@
                     $("<th>").text("No.").appendTo(tblhtr).click(function() {
                         sort(0);
                     });
-                    $("<th>").width("620px").text("Kandidat " + menteri).appendTo(tblhtr).click(function() {
+                    $("<th>").width("620px").text("Kandidat " + unescape(menteri)).appendTo(tblhtr).click(function() {
                         sort(1);
                     });
                     $("<th>").html("&nbsp;").appendTo(tblhtr);
@@ -492,10 +493,11 @@
                                                 || input2.val().length == 0) {
                                             alert("Silahkan Tuliskan Usulan Anda.")
                                         } else {
+                                            var menteri_ = unescape(menteri);
                                             $.ajax({
                                                 url: "/action?form_action=setSet2&session=" + Math.random()
                                                 , type: "POST"
-                                                , data: JSON.stringify({input0: input0_, type0: type0_, input: input_, value: input.val(), value1: input1.val(), value2: input2.val()})
+                                                , data: JSON.stringify({menteri: menteri_, input0: input0_, type0: type0_, input: input_, value: input.val(), value1: input1.val().substr(0, 150), value2: input2.val()})
                                                 , dataType: 'json'
                                                 , mimeType: "application/json"
                                                 , contentType: "application/json"
@@ -765,7 +767,7 @@
             function showvideo() {
                 if ($("#fbvideo").css("display") == "none") {
                     $("#fbvideo").show();
-                    $("#fbvideolink").html("Sembunyikan Facebook Frame");
+                    $("#fbvideolink").html("Tutup Facebook Frame");
                 } else {
                     $("#fbvideo").hide();
                     $("#fbvideolink").html("Kunjungi Facebook Page");
@@ -775,33 +777,12 @@
         </script>
     </head>
     <body>
-        <div id="headerdiv" style="width:100%;">
-            <table style="width:100%;">
-                <tr style="background-color: transparent;"><td colspan="2" style="text-align: center;font-weight: bolder; background-color: transparent;">KawalMenteri 2014</td></tr>
-                <tr>
-                    <td style="text-align: center;font-weight: bolder; background-color: transparent;">Apa itu KawalMenteri?</td>
-                    <td style="text-align: center;font-weight: bolder; background-color: transparent;">Mengapa KawalMenteri?</td>
-                </tr>
-                <tr>
-                    <td>KawalMenteri adalah sebuah platform partisipasi public melalui media internet yang memungkinkan semua masyarakat Indonesia menyampaikan pendapat dan penilaiannya terhadap para bakal calon Menteri dan kinerja Menteri yang telah terpilih dalam Kabinet Pemerintahan Periode 2014-2019.</td>
-                    <td>KawalMenteri diperlukan untuk memfasilitasi arus baru demokrasi yang partisipatif, transparan, dan akuntabel sehingga memungkinkan adanya penyampaian langsung pendapat dan penilaian public terhadap para pejabat public dalam hal ini Menteri. Sebelum itu, pendapat dan penilaian public juga disampaikan terkait para bakal calon Menteri yang dianggap layak untuk menjadi anggota Menteri pada Kabinet Pemerintahan Periode 2014-2019.</td>
-                </tr>
-                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;">Lihat Lebih Lengkap di <a target="_blank" href="https://docs.google.com/document/d/1xgPEGkSGuMHtkRE21gV6_Q4nNjJrBTa1HZJuw1SscbM/edit?usp=sharing">Media Baru Demokrasi yang Partisipatif, Transparan, dan Akuntabel Menuju Indonesia Baru</a></td></tr>
-                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;">Ingin tahu bagaimana <a target="_blank" href="https://docs.google.com/document/d/1po6fsXFLDgVHP-1sd6dy2Gput_SqfBigGLw13rfrPMs/edit?usp=sharing">Cara Berpartisipasi</a>?</td></tr>
-                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;">Ingin jadi Anggota atau Koordinator <a target="_blank" href="https://docs.google.com/spreadsheets/d/1v6_bhQfa6gDuNwip8iFgw-Ju2X5NDgoddFGoC0snCGc/edit?usp=sharing">Tim Pos Kementerian</a></td></tr>
-                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;color: red;">Semua Data akan di-reset (hapus) pada tanggal 17-Agustus-2014 </td></tr>
-                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;color: red;"><a target="_blank" href="https://docs.google.com/document/d/1Aj7GssygE5Z5jbth9CNHDRkh_z8ibk5bkAeGjZS_E6k/edit?usp=sharing">Pertemuan Berikutnya Tanggal 7-Agustus-2014 Jam 18:30 WIB (Google Hangout akan dishare. Tebuka untuk umum)</a></td></tr>
-                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;"><a href="javascript:showvideo()" id="fbvideolink">Kunjungi Facebook Page</a></td></tr>
-            </table>
-            <br/>
-            <div id="fbvideo" style="display:none;">
-                <div class="fb-post" data-href="https://www.facebook.com/photo.php?v=353140568168464" data-width="750"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/photo.php?v=353140568168464">Post</a> by <a href="https://www.facebook.com/KawalMenteri">Kawal Menteri</a>.</div></div>
-            </div>
-        </div>
-        <hr><br>
-
         <div id="fb-root"></div>
-        <script>(function(d, s, id) {
+        <script>
+            function setacct() {
+                $("#acctName").html("<a href='" + userAccount.link + "' target='_new' class='classaa'>" + userAccount.name + "</a>");
+            }
+            (function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id))
                     return;
@@ -864,6 +845,7 @@
                                 , verified: true};
                             fb_cache["me"] = userAccount;
                             get_fb('me', getChild);
+                            setacct();
                         });
                     });
 
@@ -896,25 +878,61 @@
                     });
                     checkLoginState();
                 };
-
-
-
-                // Load the SDK asynchronously
-            <%--userAccount = {email: "khairul.anshar@gmail.com"
-                , first_name: "Khairul"
-                , gender: "male"
-                , id: "10152397276159760"
-                , last_name: "Anshar"
-                , link: "https://www.facebook.com/app_scoped_user_id/10152397276159760/"
-                , locale: "en_US"
-                , name: "Khairul Anshar"
-                , timezone: 8
-                , updated_time: "2014-07-23T06:12:43+0000"
-                , verified: true};
-            fb_cache["me"] = userAccount;
-            get_fb('me', getChild);--%>
             });
         </script>
+        <div id="headerdiv" style="width:100%;">
+            <table style="width:100%;">
+                <tr style="background-color: transparent;vertical-align: bottom;">
+                    <td style="width: 40%;text-align: left;background-color: transparent;white-space:nowrap;">
+                        <table>
+                            <tr style="background-color: transparent;vertical-align: bottom;">
+                                <td style="text-align: left;background-color: transparent;white-space:nowrap;">Selamat Datang</td>
+                                <td style="text-align: left;background-color: transparent;white-space:nowrap;" id="acctName"></td>
+                                <td style="text-align: left;background-color: transparent;white-space:nowrap;"><div style="display: inline;"class="fb-like" data-href="http://www.kawalmenteri.org" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="width: 60%;text-align: right;font-weight: bolder; background-color: transparent;white-space:nowrap;">
+                        <p align="right" style="padding:0px;margin: 0px;">
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="javascript:" class="classaa" id="apakawal">Apa itu KawalMenteri?</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="javascript:" class="classaa" id="kenapakawal">Mengapa KawalMenteri?</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="https://docs.google.com/document/d/1po6fsXFLDgVHP-1sd6dy2Gput_SqfBigGLw13rfrPMs/edit?usp=sharing" class="classaa" id="carakawal" target="_newtarget">Cara Berpartisipasi?</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="https://docs.google.com/spreadsheets/d/1v6_bhQfa6gDuNwip8iFgw-Ju2X5NDgoddFGoC0snCGc/edit?usp=sharing" class="classaa" id="bergabungkawal" target="_newtarget">Ingin Bergabung?</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="javascript:showvideo()" id="fbvideolink" class="classaa">Kunjungi Facebook Page</a>
+                            <span>&nbsp;|&nbsp;</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="background-color: transparent;">
+                    <td style="width: 40%;">&nbsp;</td>
+                    <td style="width: 60%;text-align: right;background-color: transparent;" id="kawaldetail"></td>
+                </tr>
+            </table>
+            <script>
+                $("#apakawal").click(function() {
+                    $("#kawaldetail").html("KawalMenteri adalah sebuah platform partisipasi public melalui media internet yang memungkinkan semua masyarakat Indonesia menyampaikan pendapat dan penilaiannya terhadap para bakal calon Menteri dan kinerja Menteri yang telah terpilih dalam Kabinet Pemerintahan Periode 2014-2019.<br><a href='javascript:'  class='classaa' style='color:red;' onclick='$(\"#kawaldetail\").html(\"\")'>Tutup</a>");
+                });
+                $("#kenapakawal").click(function() {
+                    $("#kawaldetail").html("KawalMenteri diperlukan untuk memfasilitasi arus baru demokrasi yang partisipatif, transparan, dan akuntabel sehingga memungkinkan adanya penyampaian langsung pendapat dan penilaian public terhadap para pejabat public dalam hal ini Menteri. Sebelum itu, pendapat dan penilaian public juga disampaikan terkait para bakal calon Menteri yang dianggap layak untuk menjadi anggota Menteri pada Kabinet Pemerintahan Periode 2014-2019.<br><a href='javascript:'  class='classaa' style='color:red;' onclick='$(\"#kawaldetail\").html(\"\")'>Tutup</a>");
+                });
+            </script>
+            <table style="width:100%;">
+                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;color: red;">Semua Data akan di-reset (hapus) pada tanggal 17-Agustus-2014 </td></tr>
+                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;color: red;"><a target="_blank" href="https://docs.google.com/document/d/1Aj7GssygE5Z5jbth9CNHDRkh_z8ibk5bkAeGjZS_E6k/edit?usp=sharing">Pertemuan Berikutnya Tanggal 11-Agustus-2014 Jam 18:30 WIB (Google Hangout akan dishare. Tebuka untuk umum)</a></td></tr>
+            </table>
+            <br/>
+            <div id="fbvideo" style="display:none;">
+                <div class="fb-post" data-href="https://www.facebook.com/photo.php?v=353140568168464" data-width="750"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/photo.php?v=353140568168464">Post</a> by <a href="https://www.facebook.com/KawalMenteri">Kawal Menteri</a>.</div></div>
+            </div>
+        </div>
+        <hr><br>
+
+
 
         <div  draggable="false" style="vertical-align:bottom;margin:0px;padding:0px;">
             <table style="vertical-align:bottom;margin:0px;padding:0px;">
@@ -936,7 +954,6 @@
                     </td>
                 </tr></table>            
         </div>        
-        <div class="fb-like" data-href="http://www.kawalmenteri.org" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>                
         <div><p id="navTop"></p></div>
         <div id="content"></div>
         <div><p id="navBottom"></p></div>
