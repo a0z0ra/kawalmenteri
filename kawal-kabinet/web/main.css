@@ -24,8 +24,17 @@ tr:nth-child(odd) { background:  #fbfbfb;}
     font-size:12px;
     text-decoration:none solid rgb(59, 89, 152);
     color: rgb(59, 89, 152);
-    height: 14px;
 }
 .classa:hover {
+    text-decoration: underline;
+}
+
+.classaa {
+    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size:14px;
+    text-decoration:none solid rgb(59, 89, 152);
+    color: rgb(59, 89, 152);
+}
+.classaa:hover {
     text-decoration: underline;
 }

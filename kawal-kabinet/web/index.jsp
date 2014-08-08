@@ -17,6 +17,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Kawal Menteri</title>
         <link href="main.css" rel="stylesheet" type="text/css">
+        <script src="JSON/json2.js"></script>
+        <script src="JSON/json_parse.js"></script>
+        <script src="JSON/json_parse_state.js"></script>
+        <script src="JSON/cycle.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <link href="rateit/rateit.css" rel="stylesheet" type="text/css">
         <link href="rateit/content/bigstars.css" rel="stylesheet" type="text/css">
@@ -210,10 +214,12 @@
                     var tfoot = thead;//$("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
                     var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
                     var tblhtr = $("<tr>").appendTo(thead);
-                    $("<th>").text("No.").appendTo(tblhtr).click(function() {
+                    var th0 = $("<th>").text("No.").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th0).click(function() {
                         sort(0);
                     });
-                    $("<th>").text("Posisi").appendTo(tblhtr).click(function() {
+                    var th1 = $("<th>").text("Posisi").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th1).click(function() {
                         sort(1);
                     });
 
@@ -361,10 +367,12 @@
                     var tfoot = thead;//$("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
                     var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
                     var tblhtr = $("<tr>").appendTo(thead);
-                    $("<th>").text("No.").appendTo(tblhtr).click(function() {
+                    var th0 = $("<th>").text("No.").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th0).click(function() {
                         sort(0);
                     });
-                    $("<th>").width("620px").text("Kandidat " + unescape(menteri)).appendTo(tblhtr).click(function() {
+                    var th1 = $("<th>").width("620px").text("Kandidat " + unescape(menteri)).appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th1).click(function() {
                         sort(1);
                     });
                     $("<th>").html("&nbsp;").appendTo(tblhtr);
@@ -379,79 +387,8 @@
                             var divx0 = $("<div>").html("").hide();
                             var divx1 = $("<div>").html("+").hide();
                             var divx2 = $("<div>").html("-").hide();
-                            var ax = $("<a>").attr("href", "javascript:").attr("class", "classa").text("Detail").click(function() {
-                                if (divx0.css("display") == "none") {
-                                    divx1.html("");
-                                    divx2.html("");
-                                    divx1.hide();
-                                    divx2.hide();
-                                    ax1.text("Komentar +");
-                                    ax2.text("Komentar -");
-                                    divx0.html("");
-                                    divx0.show();
-                                    divx0.append($("<span>").html("<b>Diusulkan oleh</b>: ")).append($("<a>").attr("class", "classa").css("font-size", "14px").attr("href", data.link).attr("target", data.nama).text(data.nama)).append($("<br>"))
-                                    var divx = $("<div>").html(data.detail).appendTo(divx0);
-                                    divx.jqte();
-                                    divx0.find('div.jqte_editor')[0].setAttribute("contenteditable", false);
-                                    //divx0.find('div.jqte_editor')[0].style.width = "600px";
-                                    divx0.find('div.jqte_toolbar')[0].innerHTML = "";
-                                    //divx0.find('div.jqte_toolbar')[0].style.width = "600px";
-                                    divx0.find('div.jqte_toolbar')[0].style.display = "none";
-                                    //divx0.find('div.jqte')[0].style.width = "600px";
-                                    $(this).text("Ringkas");
-                                } else {
-                                    divx0.html("");
-                                    divx0.hide();
-                                    $(this).text("Detail");
-                                }
-
-                            });
-                            var ax1 = $("<a>").attr("href", "javascript:").attr("class", "classa").text("Komentar +").click(function() {
-                                if (divx1.css("display") == "none") {
-                                    divx0.html("");
-                                    divx2.html("");
-                                    divx0.hide();
-                                    divx2.hide();
-
-                                    ax.text("Detail");
-                                    ax2.text("Komentar -");
-
-                                    divx1.show();
-                                    $(this).text("Komentar +");
-                                    divx1.html("+");
-                                } else {
-                                    divx1.hide();
-                                    $(this).text("Komentar +");
-                                }
-
-                            });
-                            var ax2 = $("<a>").attr("href", "javascript:").attr("class", "classa").text("Komentar -").click(function() {
-                                if (divx2.css("display") == "none") {
-                                    divx0.html("");
-                                    divx1.html("");
-                                    divx0.hide();
-                                    divx1.hide();
-
-                                    ax.text("Detail");
-                                    ax1.text("Komentar +");
-
-
-                                    divx2.show();
-                                    $(this).text("Komentar -");
-                                    divx2.html("-");
-                                } else {
-                                    divx2.hide();
-                                    $(this).text("Komentar -");
-                                }
-
-                            });
                             var tbld = $("<table>").css("border", "0px");
                             var trd = $("<tr>").css("border", "0px").css("background-color", "transparent").appendTo(tbld);
-                            $("<td>").append(ax).appendTo(trd);
-                            $("<td>").append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
-                            $("<td>").append(ax1).appendTo(trd);
-                            $("<td>").append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
-                            $("<td>").append(ax2).appendTo(trd);
                             tdx.append($("<span>").html("<b>Nama</b>: " + data.kandidat)).append($("<br>"))
                                     .append($("<span>").html("<b>Deskripsi Umum</b>:" + data.desc)).append($("<br>"))
                                     .append(tbld)
@@ -464,7 +401,7 @@
                             td__.html("")
                             var div1 = $("<div>").appendTo(td__);
                             var div2 = $("<div>").appendTo(td__);
-                            getMyComment(div1, input_, replaceSpecial(data.kandidat), div2, input0_, i);
+                            getMyComment(div1, input_, replaceSpecial(data.kandidat), div2, input0_, i, divx0, divx1, divx2, trd, data, tdx);
 
                         }
 
@@ -521,9 +458,6 @@
                                 }
                             }));
                             div1.appendTo(div0);
-
-
-
                         }
                     }
                     $.each(result.records, function(k, c) {
@@ -537,7 +471,103 @@
                 } catch (e) {
                 }
             }
-            function getMyComment(td, dept, namaCalon, td_, i, ii) {
+
+            function displayComment(td, result) {
+                //var p=$("<p>").appendTo(td);
+                var tblb = $("<table>").css("border", "0px").appendTo(td);
+                var trb = $("<tr>").css("background-color", "transparent").appendTo(tblb);
+                $("<td>").append($("<b>").text("-").css("font-size", "12px")).css("border", "0px").appendTo(trb);
+                var tdb1 = $("<td>").css("border", "0px").appendTo(trb);
+                $("<td>").append($("<span>").text("0").css("font-size", "12px")).css("border", "0px").appendTo(trb);
+                var tdb2 = $("<td>").css("border", "0px").appendTo(trb);
+                $("<td>").append($("<b>").text("+").css("font-size", "12px")).css("border", "0px").appendTo(trb);
+                var div__ = $("<div>").css("direction", "rtl").appendTo(tdb1);
+                var div_ = $("<div>").attr("class", "rateit").attr("data-rateit-ispreset", "false").attr("data-rateit-readonly", "true").appendTo(div__);
+                var div = $("<div>").attr("class", "rateit").attr("data-rateit-ispreset", "false").attr("data-rateit-readonly", "true").appendTo(tdb2);
+                if (parseFloat(result.star) <= 0) {
+                    div_.rateit({max: parseInt((parseFloat(result.star) * -1)), step: 1, min: 0, value: (parseFloat(result.star) * -1)});
+                    div.rateit({max: 1, step: 1, min: 0});
+                } else {
+                    div.rateit({max: parseInt(parseFloat(result.star)), step: 1, min: 0, value: (parseFloat(result.star))});
+                    div_.rateit({max: 1, step: 1, min: 0});
+                }
+                td.append($("<a>").attr("href", result.link).attr("target", "_new").attr("class", "classa").text(result.name)).append($("<span>").html("&nbsp;")).append($("<span>").width(300).css("font-size", "12px").text(result.comment)).append($("<br>"))
+                td.append($("<span>").css("font-size", "9px").css("color", "#9197a3").text(result.date));
+                td.append($("<hr>"))
+                td.append($("<br>"))
+            }
+
+            function createLinkComment(divx0, divx1, divx2, result, trd, data, tdx) {
+                trd.html("");
+                divx0.html("");
+                divx1.html("");
+                divx2.html("");
+                var ax = $("<a>").attr("href", "javascript:").attr("class", "classa").text("Detail").click(function() {
+                    if (divx0.css("display") == "none") {
+                        divx1.html("");
+                        divx2.html("");
+                        divx1.hide();
+                        divx2.hide();
+                        divx0.html("");
+                        divx0.show();
+                        divx0.append($("<span>").html("<b>Diusulkan oleh</b>: ")).append($("<a>").attr("class", "classa").css("font-size", "14px").attr("href", data.link).attr("target", data.nama).text(data.nama)).append($("<br>"))
+                        var divx = $("<div>").html(data.detail).appendTo(divx0);
+                        divx.jqte();
+                        divx0.find('div.jqte_editor')[0].setAttribute("contenteditable", false);
+                        //divx0.find('div.jqte_editor')[0].style.width = "600px";
+                        divx0.find('div.jqte_toolbar')[0].innerHTML = "";
+                        //divx0.find('div.jqte_toolbar')[0].style.width = "600px";
+                        divx0.find('div.jqte_toolbar')[0].style.display = "none";
+                        //divx0.find('div.jqte')[0].style.width = "600px";
+                    } else {
+                        divx0.html("");
+                        divx0.hide();
+                    }
+
+                });
+                var ax1 = $("<a>").attr("href", "javascript:").attr("class", "classa").text("Komentar+ (" + result.AlasanStarsp.length + " Komentar, " + result.totalp + " Bintang)")
+                        .attr("title", "Ada " + result.AlasanStarsp.length + " Komentar+ dan " + result.totalp + " bintang").click(function() {
+                    if (divx1.css("display") == "none") {
+                        divx0.html("");
+                        divx2.html("");
+                        divx0.hide();
+                        divx2.hide();
+                        divx1.show();
+                        divx1.html("");
+                        $.each(result.AlasanStarsp, function(k, c) {
+                            displayComment(divx1, c);
+                        })
+                    } else {
+                        divx1.hide();
+                    }
+
+                });
+                var ax2 = $("<a>").attr("href", "javascript:").attr("class", "classa").text("Komentar- (" + result.AlasanStarsn.length + " Komentar, " + result.totaln + " Bintang)")
+                        .attr("title", "Ada " + result.AlasanStarsn.length + " Komentar- dan " + result.totaln + " bintang").click(function() {
+                    if (divx2.css("display") == "none") {
+                        divx0.html("");
+                        divx1.html("");
+                        divx0.hide();
+                        divx1.hide();
+                        divx2.show();
+                        divx2.html("");
+                        $.each(result.AlasanStarsn, function(k, c) {
+                            displayComment(divx2, c);
+                        })
+                    } else {
+                        divx2.hide();
+                    }
+                });
+                $("<td>").append(ax).appendTo(trd);
+                $("<td>").append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
+                $("<td>").append(ax1).appendTo(trd);
+                $("<td>").append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
+                $("<td>").append(ax2).appendTo(trd);
+                $("<td>").append($("<span>").css("color", "#9197a3").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
+                $("<td>").append($("<span>").css("color", "#9197a3").css("font-size", "12px").html("<b>Total: " + result.total + " Bintang</b>")).appendTo(trd);
+                tdx.attr("data-sort-index", "1").attr("data-sort", parseInt(result.total))
+            }
+            function getMyComment(td, dept, namaCalon, td_, i, ii, divx0, divx1, divx2, trd, data, tdx___) {
                 td.html("Sedang Mengambil Data...");
                 $.ajax({
                     url: "/action?form_action=getMyComment&session=" + Math.random()
@@ -549,47 +579,31 @@
                     , cache: false
                     , success: function(result) {
                         try {
-                            if (userAccount.name) {
-                                if (result.AlasanStar.name == userAccount.name) {
+                            if (userAccount.id && result) {
+                                if (result.AlasanStar.id == userAccount.id) {
                                     td.html("");
-                                    var tblb = $("<table>").css("border", "0px").appendTo(td);
-                                    var trb = $("<tr>").css("background-color", "transparent").appendTo(tblb);
-                                    $("<td>").append($("<b>").text("-").css("font-size", "12px")).css("border", "0px").appendTo(trb);
-                                    var tdb1 = $("<td>").css("border", "0px").appendTo(trb);
-                                    $("<td>").append($("<span>").text("0").css("font-size", "12px")).css("border", "0px").appendTo(trb);
-                                    var tdb2 = $("<td>").css("border", "0px").appendTo(trb);
-                                    $("<td>").append($("<b>").text("+").css("font-size", "12px")).css("border", "0px").appendTo(trb);
-                                    var div__ = $("<div>").css("direction", "rtl").appendTo(tdb1);
-                                    var div_ = $("<div>").attr("class", "rateit").attr("data-rateit-ispreset", "false").attr("data-rateit-readonly", "true").appendTo(div__);
-                                    var div = $("<div>").attr("class", "rateit").attr("data-rateit-ispreset", "false").attr("data-rateit-readonly", "true").appendTo(tdb2);
-                                    if (parseFloat(result.AlasanStar.star) <= 0) {
-                                        div_.rateit({max: parseInt((parseFloat(result.AlasanStar.star) * -1) + 1), step: 1, min: 0, value: (parseFloat(result.AlasanStar.star) * -1)});
-                                        div.rateit({max: 1, step: 1, min: 0});
-                                    } else {
-                                        div.rateit({max: parseInt(parseFloat(result.AlasanStar.star) + 1), step: 1, min: 0, value: (parseFloat(result.AlasanStar.star))});
-                                        div_.rateit({max: 1, step: 1, min: 0});
-                                    }
-                                    td.append($("<span>").css("font-size", "9px").text(result.AlasanStar.date)).append($("<br>"));
-                                    td.append($("<span>").css("font-size", "12px").text(result.AlasanStar.comment))
+                                    displayComment(td, result.AlasanStar);
                                 } else {
                                     td.html("");
-                                    setCommentCol(td, dept, namaCalon, td_, i, ii);
+                                    setCommentCol(td, dept, namaCalon, td_, i, ii, divx0, divx1, divx2, trd, data, tdx___);
                                 }
                             } else {
                                 td.html("");
                             }
                         } catch (e) {
-
+                        }
+                        try {
+                            createLinkComment(divx0, divx1, divx2, result, trd, data, tdx___);
+                        } catch (e) {
                         }
                     }
                     , error: function() {
                     }
                     , complete: function() {
-
                     }
                 });
             }
-            function setCommentCol(td, dept, namaCalon, td_, i, ii) {
+            function setCommentCol(td, dept, namaCalon, td_, i, ii, divx0, divx1, divx2, trd, data, tdx___) {
                 var tblb = $("<table>").css("border", "0px").appendTo(td);
                 var trb = $("<tr>").css("background-color", "transparent").appendTo(tblb);
                 $("<td>").append($("<span>").text("-")).css("border", "0px").appendTo(trb);
@@ -650,7 +664,7 @@
                             , cache: false
                             , success: function(result) {
                                 try {
-                                    getMyComment(td, dept, namaCalon, td_, i, ii);
+                                    getMyComment(td, dept, namaCalon, td_, i, ii, divx0, divx1, divx2, trd, data, tdx___);
                                 } catch (e) {
 
                                 }
@@ -821,7 +835,7 @@
                 });
                 timeout_ = setTimeout(function() {
                     getHash();
-                }, 3500);
+                }, 6000);
             }
             function signinCallback(authResult) {
                 if (authResult['status']['signed_in']) {
@@ -960,7 +974,8 @@
         <br/><br/>
         <div id="footerdiv"></div>
         <br/><br/><br/><br/>
-
+<hr><br>
+@8814540
 
     </body>
 </html>

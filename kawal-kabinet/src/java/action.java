@@ -74,24 +74,6 @@ public class action extends HttpServlet {
                 record.put("userAccount", obj1);
             } catch (Exception e) {
             }
-            try {
-                InputStream feedStream = new FileInputStream("data/dept.json");
-                InputStreamReader is = new InputStreamReader(feedStream);
-                StringBuilder sb1 = new StringBuilder();
-                BufferedReader br = new BufferedReader(is);
-                String read = br.readLine();
-                while (read != null) {
-                    sb1.append(read);
-                    read = br.readLine();
-                }
-                Object obj0 = JSONValue.parse(sb1.toString());
-                JSONArray obj11 = (JSONArray) obj0;
-                record.put("dept", obj11);
-                record.put("status", "OK");
-            } catch (Exception e) {
-                record.put("status", "error");
-                record.put("errormsg", e.toString());
-            }
             response.setContentType("text/html;charset=UTF-8");
             out.print(JSONValue.toJSONString(record));
             out.flush();
@@ -116,7 +98,7 @@ public class action extends HttpServlet {
                 String id = userAccount.get("id").toString();
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
-                postData(name, dept, namaCalon, star, comment, id, "AlasanStar", dept + namaCalon, id);
+                postData(name, dept, namaCalon, star, comment, id, "AlasanStar", dept + namaCalon, id, link);
                 postData2(name, dept, namaCalon, star, comment, id, "AlasanStarCalon", dept, namaCalon, link);
 
                 record.put("status", "OK");
@@ -132,6 +114,8 @@ public class action extends HttpServlet {
             StringBuffer sb = new StringBuffer();
             String line = null;
             LinkedHashMap record = new LinkedHashMap();
+            String dept = "";
+            String namaCalon = "";
             try {
                 BufferedReader reader = request.getReader();
                 while ((line = reader.readLine()) != null) {
@@ -142,8 +126,8 @@ public class action extends HttpServlet {
                 JSONObject obj1 = (JSONObject) obj;
                 JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
                 String id_ = userAccount.get("id").toString();
-                String dept = obj1.get("dept").toString();
-                String namaCalon = obj1.get("namaCalon").toString();
+                dept = obj1.get("dept").toString();
+                namaCalon = obj1.get("namaCalon").toString();
                 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
                 Key guestbookKey = KeyFactory.createKey(dept + namaCalon, id_);
                 // Run an ancestor query to ensure we see the most up-to-date
@@ -158,13 +142,72 @@ public class action extends HttpServlet {
                     String star = AlasanStar.getProperty("star").toString();
                     String comment = AlasanStar.getProperty("comment").toString();
                     String name = AlasanStar.getProperty("name").toString();
+                    String link = AlasanStar.getProperty("link").toString();
                     record1.put("id", id);
                     record1.put("date", date);
                     record1.put("star", star);
                     record1.put("comment", comment);
                     record1.put("name", name);
+                    record1.put("link", link);
                 }
                 record.put("AlasanStar", record1);
+
+                guestbookKey = KeyFactory.createKey(dept, namaCalon);
+                // Run an ancestor query to ensure we see the most up-to-date
+                // view of the Greetings belonging to the selected Guestbook.
+                query = new Query("AlasanStarCalon", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+                //List<Entity> AlasanStars = datastore.prepare(query);
+                pq = datastore.prepare(query);
+                JSONArray obj11 = new JSONArray();
+                JSONArray obj11p = new JSONArray();
+                JSONArray obj11n = new JSONArray();
+                int i = 0;
+                int ip = 0;
+                int in = 0;
+                double total = 0;
+                double totalp = 0;
+                double totaln = 0;
+                for (Entity AlasanStar : pq.asIterable()) {
+                    record1 = new LinkedHashMap();
+                    String id = AlasanStar.getProperty("user").toString();
+                    String date = AlasanStar.getProperty("date").toString();
+                    String star = AlasanStar.getProperty("star").toString();
+                    String comment = AlasanStar.getProperty("comment").toString();
+                    comment = comment.replaceAll("\n", "<br/>");
+                    String name = AlasanStar.getProperty("name").toString();
+                    String link = AlasanStar.getProperty("link").toString();
+                    record1.put("id", id);
+                    record1.put("date", date);
+                    record1.put("star", star);
+                    record1.put("comment", comment);
+                    record1.put("name", name);
+                    record1.put("link", link);
+                    obj11.add(record1);
+                    i++;
+                    double d = Double.parseDouble(star);
+                    total = total + d;
+                    if (d >= 0) {
+                        obj11p.add(record1);
+                        ip++;
+                        totalp = totalp + d;
+                    } else {
+                        obj11n.add(record1);
+                        in++;
+                        totaln = totaln + d;
+                    }
+                }
+                double avg = total / i;
+                if (i == 0) {
+                    avg = 0;
+                }
+                DecimalFormat df = new DecimalFormat("#.##");
+                record.put("total", total);
+                record.put("totalp", totalp);
+                record.put("totaln", totaln);
+                record.put("avg", df.format(avg));
+                //record.put("AlasanStars", obj11);
+                record.put("AlasanStarsp", obj11p);
+                record.put("AlasanStarsn", obj11n);
                 record.put("status", "OK");
             } catch (Exception e) {
                 record.put("status", "error");
@@ -402,7 +445,10 @@ public class action extends HttpServlet {
                     psosisiEntity.setProperty("date", date);
                     psosisiEntity.setProperty("posisi", value);
                     psosisiEntity.setProperty("detail", new Text(detail));
-                    if (email.equalsIgnoreCase("khairul.anshar@gmail.com")) {
+                    if (email.equalsIgnoreCase("khairul.anshar@gmail.com")
+                            || id.equalsIgnoreCase("112525777678499279265")
+                            || id.equalsIgnoreCase("10152397276159760")
+                            || nama.equalsIgnoreCase("Khairul Anshar")) {
                         psosisiEntity.setProperty("reviewed", "Y");
                     } else {
                         psosisiEntity.setProperty("reviewed", "N");
@@ -598,9 +644,12 @@ public class action extends HttpServlet {
                     psosisiEntity.setProperty("date", date);
                     psosisiEntity.setProperty("kandidat", value);
                     psosisiEntity.setProperty("desc", value1);
-                    psosisiEntity.setProperty("menteri", menteri);
+                    psosisiEntity.setProperty("posisi", menteri);
                     psosisiEntity.setProperty("detail", new Text(value2));
-                    if (email.equalsIgnoreCase("khairul.anshar@gmail.com")) {
+                    if (email.equalsIgnoreCase("khairul.anshar@gmail.com")
+                            || id.equalsIgnoreCase("112525777678499279265")
+                            || id.equalsIgnoreCase("10152397276159760")
+                            || nama.equalsIgnoreCase("Khairul Anshar")) {
                         psosisiEntity.setProperty("reviewed", "Y");
                     } else {
                         psosisiEntity.setProperty("reviewed", "N");
@@ -665,7 +714,7 @@ public class action extends HttpServlet {
         }
     }
 
-    private void postData(String name, String dept, String namaCalon, String star, String comment, String id, String table, String key, String keyVal) {
+    private void postData(String name, String dept, String namaCalon, String star, String comment, String id, String table, String key, String keyVal, String link) {
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Key guestbookKey = KeyFactory.createKey(key, keyVal);
@@ -683,6 +732,7 @@ public class action extends HttpServlet {
             AlasanStar.setProperty("star", star);
             AlasanStar.setProperty("comment", comment);
             AlasanStar.setProperty("name", name);
+            AlasanStar.setProperty("link", link);
             datastore.put(AlasanStar);
         } else {
             for (Entity AlasanStar : AlasanStars) {
@@ -692,6 +742,7 @@ public class action extends HttpServlet {
                 AlasanStar.setProperty("star", star);
                 AlasanStar.setProperty("comment", comment);
                 AlasanStar.setProperty("name", name);
+                AlasanStar.setProperty("link", link);
                 datastore.put(AlasanStar);
             }
 
