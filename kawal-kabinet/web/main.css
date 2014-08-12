@@ -19,9 +19,16 @@ th {
 tr:nth-child(even) { background: #EEE;}
 tr:nth-child(odd) { background:  #fbfbfb;}
 
+.classax {
+    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
+    font-size:14px;
+    text-decoration:none solid #207bf4;
+    color: #207bf4;
+}
+
 .classa {
     font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
-    font-size:12px;
+    font-size:14px;
     text-decoration:none solid rgb(59, 89, 152);
     color: rgb(59, 89, 152);
 }
@@ -37,4 +44,59 @@ tr:nth-child(odd) { background:  #fbfbfb;}
 }
 .classaa:hover {
     text-decoration: underline;
+}
+
+.social-container {
+    margin:0px;
+    padding:0px;
+}
+.social-container .links {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    text-align: center;
+}
+.social-container .links a {
+    margin: 0 20px;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+.social-container .links a:hover {
+    color: rgb(53, 76, 140);
+}
+
+
+.like {
+    background-image: url(like.png);
+    height: 30px; 
+    width: 30px; 
+    border: 0px;
+}
+.like:hover {
+    background-image: url(like_selected.png);
+    height: 30px; 
+    width: 30px; 
+    border: 0px;
+}
+
+.like .selected {
+    background-image: url(like_selected.png);
+    height: 30px; 
+    width: 30px; 
+    border: 0px;
+}
+
+.dislike {
+    background-image: url(dislike.png);
+    width: 30px;
+}
+.dislike:hover {
+    background-image: url(dislike_selected.png);
+    width: 30px;
+}
+
+.dislike .selected {
+    background-image: url(dislike_selected.png);
+    width: 30px;
 }

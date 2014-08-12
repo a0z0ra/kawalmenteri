@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Kawal Menteri 2014</title>
+        <meta charset="UTF-8">
+        <link href="main.css" rel="stylesheet" type="text/css">
+        <script src="JSON/json2.js"></script>
+        <script src="JSON/json_parse.js"></script>
+        <script src="JSON/json_parse_state.js"></script>
+        <script src="JSON/cycle.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type="text/javascript" src="jQuery-TE_v.1.4.0/jquery-te-1.4.0.min.js" charset="utf-8"></script>
+        <link type="text/css" rel="stylesheet" href="jQuery-TE_v.1.4.0/jquery-te-1.4.0.css">
+        <link rel="stylesheet" href="social-likes/social-likes_birman.css">
+        <script src="social-likes/social-likes.min.js"></script>
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="prettySocial-master/jquery.prettySocial.min.js"></script>
+    </head>
+    <body>
+        <script>
+            (function(i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function() {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                        m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+            ga('create', 'UA-53226163-1', 'auto');
+            ga('send', 'pageview');
+
+            function statusChangeCallback(response) {
+                if (response.status === 'connected') {
+                    $('#content').html("Anda Login dengan Facebook");
+                    get_fb('me', getChild);
+                } else {
+                    $('#content').html("Sedang Mengecek Google Session...");
+                    checkGoogleState();
+
+                }
+            }
+
+            function checkGoogleState() {
+                (function() {
+                    var po = document.createElement('script');
+                    po.type = 'text/javascript';
+                    po.async = true;
+                    po.src = 'https://apis.google.com/js/client:plusone.js';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(po, s);
+                })();
+            }
+
+            function checkLoginState() {
+                FB.getLoginStatus(function(response) {
+                    statusChangeCallback(response);
+                });
+            }
+            //checkGoogleState();
+            window.fbAsyncInit = function() {
+                $('#content').html("Sedang Mengecek Facebook Session...");
+                FB.init({
+                    appId: '1519572904939148',
+                    cookie: true, // enable cookies to allow the server to access 
+                    // the session
+                    xfbml: true, // parse social plugins on this page
+                    version: 'v2.0' // use version 2.0
+                });
+
+                FB.getLoginStatus(function(response) {
+                    statusChangeCallback(response);
+                });
+
+            };
+
+            // Load the SDK asynchronously
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id))
+                    return;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+
+
+            /**/
+
+            function setacct() {
+                $("#acctName").html("<a href='" + userAccount.link + "' target='_new' class='classaa'>" + userAccount.name + "</a>");
+            }
+
+            function get_fb(id, getChild) {
+                try {
+                    $("#divLogin").hide();
+                    $("#loginFBbutton").hide();
+                } catch (e) {
+                }
+                if (fb_cache[id]) {
+                    return getChild(id, fb_cache[id]);
+                }
+                FB.api('/' + id, function(res) {
+                    getChild(id, res);
+                });
+            }
+            function signinCallback(authResult) {
+                if (authResult['status']['signed_in']) {
+                    gapi.client.load('plus', 'v1', function() {
+                        var request = gapi.client.plus.people.get({
+                            'userId': 'me'
+                        });
+                        request.execute(function(resp) {
+                            userAccount = {email: resp.url
+                                , first_name: resp.name.familyName
+                                , gender: resp.gender
+                                , id: resp.id
+                                , last_name: resp.name.givenName
+                                , link: resp.url
+                                , locale: "en_US"
+                                , name: resp.displayName
+                                , timezone: 8
+                                , updated_time: ""
+                                , verified: true};
+                            fb_cache["me"] = userAccount;
+                            get_fb('me', getChild);
+                            setacct();
+                        });
+                    });
+                } else {
+                    $('#content').html("Sedang Mengambil Data");
+                    getHash();
+                }
+            }
+            var sortState = [1, 1];
+            var userAccount = {};
+            var fb_cache = {};
+            function sort(i) {
+                var trs = $('#tbodySort').children("tr");
+                var tds = $(trs[0]).find('td');
+                var idx = 0;
+                for (var j = 0; j < tds.length; j++) {
+                    if ($(tds[j]).data('sort-index') == i) {
+                        idx = j + 1;
+                        break;
+                    }
+                }
+                var mul = 1;
+                if (sortState[0] === idx) {
+                    mul = sortState[1] * -1;
+                }
+                sortState = [idx, mul];
+                trs.sort(function(a, b) {
+
+                    var ka = $(a).find('td:nth-child(' + idx + ')').data('sort');
+                    var kb = $(b).find('td:nth-child(' + idx + ')').data('sort');
+                    if (!ka && !kb) {
+                        return 0 * mul;
+                    }
+
+                    if (!ka && !!kb) {
+                        return -1 * mul;
+                    }
+
+                    if (!!ka && !kb) {
+                        return 1 * mul;
+                    }
+
+                    if (!!ka.localeCompare) {
+                        return ka.localeCompare(kb) * mul;
+                    }
+                    return (ka - kb) * mul;
+                });
+                $(trs).detach();
+                $('#tbodySort').append(trs);
+            }
+
+            function sort2(i) {
+                var trs = $('#tbodySort').children("tr");
+                var tds = $(trs[0]).find('td');
+                var idx = 0;
+                for (var j = 0; j < tds.length; j++) {
+                    if ($(tds[j]).data('sort-index') == i) {
+                        idx = j + 1;
+                        break;
+                    }
+                }
+                var mul = 1;
+                if (sortState[0] === idx) {
+                    mul = sortState[1] * -1;
+                }
+                sortState = [idx, mul];
+                trs.sort(function(a, b) {
+
+                    var ka = $(a).find('td:nth-child(' + idx + ')').data('sort');
+                    var kb = $(b).find('td:nth-child(' + idx + ')').data('sort');
+                    if (!ka && !kb) {
+                        return 0 * mul;
+                    }
+
+                    if (ka < kb) {
+                        return -1 * mul;
+                    }
+
+                    if (ka > kb) {
+                        return 1 * mul;
+                    }
+
+                    if (!!ka.localeCompare) {
+                        return ka.localeCompare(kb) * mul;
+                    }
+                    return (ka - kb) * mul;
+                });
+                $(trs).detach();
+                $('#tbodySort').append(trs);
+            }
+
+            var getChild = function(id, res) {
+                fb_cache[id] = res;
+                $.ajax({
+                    url: "/action?form_action=cekauth&session=" + Math.random()
+                    , type: "POST"
+                    , data: JSON.stringify(res)
+                    , dataType: 'json'
+                    , mimeType: "application/json"
+                    , contentType: "application/json"
+                    , cache: false
+                    , success: function(result) {
+                        $('#content').html("");
+                        $('#headerdiv').show();
+                        try {
+                            if (result.userAccount) {
+                                userAccount = result.userAccount;
+                                setacct();
+                            }
+                            getHash();
+                        } catch (e) {
+                        }
+                    }
+                    , error: function() {
+                        $('#content').html("Ada yang bermasalah dengan koneksi internet...");
+                    }
+                    , complete: function() {
+                    }
+                });
+            };
+            function getHash() {
+                var arr = window.location.hash.substr(1).split('.');
+                if (arr[0] == "") {
+                    window.location = "#0.0";
+                }
+                if ((arr.length == 1 && (arr[0] == "0"))) {
+                    set0();
+                }
+                if (arr.length == 2) {
+                    set1(arr[1], dataPosisi[parseInt(arr[1])]);
+                }
+                if (arr.length >= 3) {
+                    //set1(arr[1], dataPosisi[parseInt(arr[1])]);
+                    set2(arr[1], arr[2], replaceSpecial(dataPosisi[parseInt(arr[1])]), arr[arr.length - 1]);
+                }
+            }
+            function replaceSpecial(inp) {
+                var val = inp.replace(/\ /g, "").replace(/\,/g, "").replace(/\./g, "").replace(/\`/g, "").replace(/\~/g, "").replace(/\!/g, "").replace(/\@/g, "").replace(/\#/g, "").replace(/\$/g, "").replace(/\%/g, "").replace(/\^/g, "").replace(/\&/g, "").replace(/\*/g, "").replace(/\(/g, "").replace(/\)/g, "").replace(/\+/g, "").replace(/\|/g, "").replace(/\{/g, "").replace(/\}/g, "").replace(/\[/g, "").replace(/\]/g, "").replace(/\:/g, "").replace(/\;/g, "").replace(/\"/g, "").replace(/\'/g, "").replace(/\?/g, "").replace(/\//g, "");
+                return val;
+            }
+            window.onhashchange = getHash;
+            var dataPosisi = ["Menteri", "Pejabat Setingkat Menteri", "Duta Besar"];
+            var dataPosisi2 = [];
+            function set0() {
+                $('#content').html("");
+                $('#navTop').html("");
+                $('#navBottom').html("");
+                var tblb = $("<table>").appendTo($('#content'));
+                var thead = $("<thead>").appendTo(tblb);
+                var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
+                var tblhtr = $("<tr>").appendTo(thead);
+                $("<th>").text("No.").appendTo(tblhtr).click(function() {
+                    sort(0);
+                });
+                $("<th>").text("Posisi").appendTo(tblhtr).click(function() {
+                    sort(1);
+                });
+                var i = 0;
+
+                $.each(dataPosisi, function(k, c) {
+                    i++;
+                    tblhtr = $("<tr>").appendTo(tbody);
+                    $("<td>").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
+                    var a = $("<a>").css("color", "rgb(109, 132, 180)").attr("href", "#0." + (i - 1)).text(c);
+                    $("<td>").attr("data-sort-index", "1").attr("data-sort", c).append(a).appendTo(tblhtr);
+                })
+            }
+            function set1(input_, type_) {
+                $('#content').html("Sedang memproses data...");
+                $('#navTop').html("");
+                $('#navBottom').html("");
+                $('#navTop').css("padding", "5px").append($("<a>").attr("href", "#0").attr("class", "classa").html("&laquo; Halaman Utama"));
+                $('#navBottom').css("padding", "5px").append($("<a>").attr("href", "#0").attr("class", "classa").html("&laquo; Halaman Utama"));
+                $.ajax({
+                    url: "/action?form_action=getSet1&session=" + Math.random()
+                    , type: "POST"
+                    , data: JSON.stringify({input: input_, type: type_})
+                    , dataType: 'json'
+                    , mimeType: "application/json"
+                    , contentType: "application/json"
+                    , cache: false
+                    , success: function(result) {
+                        set1Result(result, input_, type_);
+                    }
+                    , error: function() {
+                        $('#content').html("Ada yang bermasalah dengan koneksi internet...");
+                    }
+                    , complete: function() {
+
+                    }
+                });
+            }
+            function set1Result(result, input_, type_) {
+                try {
+                    $('#content').html("");
+                    $('#content').show();
+                    var tblb = $("<table>").appendTo($('#content'));
+                    var thead = $("<thead>").appendTo(tblb);
+                    var tfoot = thead;//$("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
+                    var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
+                    var tblhtr = $("<tr>").appendTo(thead);
+                    var th0 = $("<th>").text("No.").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th0).click(function() {
+                        sort(0);
+                    });
+                    var th1 = $("<th>").text("Jabatan " + type_).appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th1).click(function() {
+                        sort(1);
+                    });
+                    var likeSocial = '<div class="links">Share: '
+                            + '<a href="#" data-type="twitter" data-url="' + window.location.href + '" data-description="Apa Pendapatmu? #kawalmenteri" data-via="kawalmenteri" class="prettySocial fa fa-twitter"></a>'
+                            + '<a href="#" data-type="facebook" data-url="' + window.location.href + '" data-title="kawalmenteri " data-description="Apa Pendapatmu? #kawalmenteri" data-media="https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-xap1/t31.0-8/10514377_353123581503496_2258141069498937437_o.jpg" class="prettySocial fa fa-facebook"></a>'
+                            + '<a href="#" data-type="googleplus" data-url="' + window.location.href + '" data-description="Apa Pendapatmu? #kawalmenteri" class="prettySocial fa fa-google-plus"></a>'
+                            + '</div>';
+                    th1.append($("<br>")).append($("<div>").attr("class", "social-container").html(likeSocial));
+                    $('.prettySocial').prettySocial();
+                    $("<th>").appendTo(tblhtr).css("white-space", "initial").width(302).append($("<span>").css("white-space", "initial").css("color", "navy").html("Apakah Anda Setuju dengan Adanya Kementerian ini?"));
+
+                    var i = 0;
+                    function createCol(tbody, data, i, type) {
+                        if (type == "read") {
+                            tblhtr = $("<tr>").css("vertical-align", "top").appendTo(tbody);
+                            //line-height: 15.359999656677246px
+                            $("<td>").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
+                            var divx = $("<div>").html("");
+                            var tddet = $("<td>").width(500).appendTo(tblhtr).attr("data-sort-index", "1").attr("data-sort", data.posisi).append($("<b>").css("font-size", "16px").text(data.posisi)).append($("<br>")).append(divx);
+                            var td = $("<td>").width(300).appendTo(tblhtr);
+                            getMyCommentPosisi(td, replaceSpecial(data.posisi), tddet, input_, data, divx);
+                        }
+                        if (type == "write") {
+                            tblhtr = $("<tr>").css("background-color", "#CFE0F1").appendTo(tfoot);
+                            var tddet0 = $("<td>").appendTo(tblhtr).attr("colspan", 3);
+                            var tddet = $("<p>").hide().appendTo(tddet0);
+                            var pdiv = $("<span>").hide();
+                            var p = $("<p>").appendTo(tddet0);
+                            p.append($("<a>").css("font-size", "16px").attr("class", "classa").attr("href", "javascript:").text("Usulkan Jabatan " + type_ + " Baru").click(function() {
+                                if (tddet.css("display") == "none") {
+                                    tddet.show();
+                                    $(this).html("Batalkan");
+                                    tddet.html("");
+                                    var input = $("<input>").css("width", "500px").css("font-size", "14px").val(data.posisi);
+                                    var input2x = $('<textarea><b>Alasan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun I: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun II: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun III: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun IV: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun V: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul></textarea>').css("width", "300px");
+                                    tddet.append($("<b>").text("Nama Jabatan: ")).append($("<br>")).append(input)
+                                            .append($("<br>")).append($("<b>").text("Detail: ")).append(input2x);
+                                    input2x.jqte();
+                                    pdiv.html("");
+                                    pdiv.show();
+                                    pdiv.append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;"));
+                                    pdiv.append($("<a>").css("font-size", "16px").attr("class", "classa").attr("href", "javascript:").text("Simpan").click(function() {
+                                        if (input.val().length == 0
+                                                || input2x.val().length == 0) {
+                                            alert("Silahkan Tuliskan Usulan Anda.")
+                                        } else {
+                                            $('#content').hide();
+                                            $.ajax({
+                                                url: "/action?form_action=setSet1&session=" + Math.random()
+                                                , type: "POST"
+                                                , data: JSON.stringify({input: input_, type: type_, value: input.val(), value1: input2x.val()})
+                                                , dataType: 'json'
+                                                , mimeType: "application/json"
+                                                , contentType: "application/json"
+                                                , cache: false
+                                                , success: function(result) {
+                                                    set1Result(result, input_, type_);
+                                                }
+                                                , error: function() {
+                                                    $('#content').html("Ada yang bermasalah dengan koneksi internet...");
+                                                }
+                                                , complete: function() {
+                                                }
+                                            });
+                                        }
+                                    }));
+
+                                } else {
+                                    tddet.hide();
+                                    pdiv.html("");
+                                    pdiv.hide();
+                                    $(this).html("Usulkan Posisi Baru");
+                                }
+                            }));
+                            pdiv.appendTo(p);
+                        }
+
+                    }
+                    $.each(result.records, function(k, c) {
+                        i++;
+                        createCol(tbody, c, i, "read")
+                    });
+                    if (userAccount.name) {
+                        i++;
+                        createCol(tbody, {posisi: "", nama: userAccount.name, link: userAccount.link}, i, "write")
+                    }
+                } catch (e) {
+
+                }
+            }
+            function getMyCommentPosisi(td, dept, tddet, input_, data, divx) {
+                td.html("Sedang Mengambil Data...");
+                $.ajax({
+                    url: "/action?form_action=getMyCommentPosisi&session=" + Math.random()
+                    , type: "POST"
+                    , data: JSON.stringify({dept: dept})
+                    , dataType: 'json'
+                    , mimeType: "application/json"
+                    , contentType: "application/json"
+                    , cache: false
+                    , success: function(result) {
+                        try {
+                            if (userAccount.id && result) {
+                                if (result.AlasanStar.id == userAccount.id) {
+                                    td.html("");
+                                    displayComment(td, result.AlasanStar, false);
+                                } else {
+                                    td.html("");
+                                    setCommentColPosisi(td, dept, tddet, input_, data, divx);
+                                }
+                            } else {
+                                td.html("");
+                            }
+                        } catch (e) {
+                        }
+                        try {
+                            var trd = createLinkComment(result, data, divx);
+                            $("<td>").append($("<span>").css("color", "#363C38").css("font-size", "10px").html("-")).appendTo(trd);
+                            $("<td>").attr("colspan", "3").appendTo(trd)
+                                    .append($("<a>").css("font-size", "16px").css("color", "#207bf4").attr("class", "classa").attr("href", "#0." + input_ + "." + replaceSpecial(data.posisi) + "." + escape(data.posisi)).text("Lihat Kandidat"));
+                        } catch (e) {
+                        }
+                    }
+                    , error: function() {
+                        td.html("");
+                    }
+                    , complete: function() {
+                    }
+                });
+            }
+            function setCommentColPosisi(td, dept, tddet, input_, data, divx) {
+                var div = buildRate(td);
+                var textarea = $("<textarea>").attr("rows", "2").attr("cols", "40").appendTo(td);
+                td.append($("<br>"));
+                var divp = createPetunjuk(td);
+                td.append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;"));
+                td.append($("<a>").attr("class", "classa").attr("href", "javascript:").text("Simpan").click(function() {
+                    if (textarea.val().length == 0 || parseInt(div.data("val")) == 0) {
+                        alert("Silahkan Tentukan Penilaian berserta Alasan Anda");
+                    } else {
+                        $.ajax({
+                            url: "/action?form_action=postCommentPosisi&session=" + Math.random()
+                            , type: "POST"
+                            , data: JSON.stringify({dept: dept, star: div.data("val"), comment: textarea.val()})
+                            , dataType: 'json'
+                            , mimeType: "application/json"
+                            , contentType: "application/json"
+                            , cache: false
+                            , success: function(result) {
+                                try {
+                                    getMyCommentPosisi(td, dept, tddet, input_, data, divx);
+                                } catch (e) {
+
+                                }
+                            }
+                            , error: function() {
+
+                            }
+                            , complete: function() {
+
+                            }
+                        });
+
+                    }
+                    //return false;
+                }));
+                td.append($("<br>")).append(divp);
+            }
+
+            function set2(input0_, input_, type0_, menteri) {
+                $('#content').html("Sedang memproses data...");
+                $('#navTop').html("");
+                $('#navBottom').html("");
+                $('#navTop').css("padding", "5px").append($("<a>").attr("href", "#0").attr("class", "classa").html("&laquo; Halaman Utama"));
+                $('#navBottom').css("padding", "5px").append($("<a>").attr("href", "#0").attr("class", "classa").html("&laquo; Halaman Utama"));
+                $('#navTop').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0." + input0_).html("&laquo; Kembali ke List " + type0_));
+                $('#navBottom').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0." + input0_).html("&laquo; Kembali ke List " + type0_));
+                $.ajax({
+                    url: "/action?form_action=getSet2&session=" + Math.random()
+                    , type: "POST"
+                    , data: JSON.stringify({input0: input0_, type0: type0_, input: input_})
+                    , dataType: 'json'
+                    , mimeType: "application/json"
+                    , contentType: "application/json"
+                    , cache: false
+                    , success: function(result) {
+                        set2Result(result, input0_, input_, type0_, menteri);
+                    }
+                    , error: function() {
+                        $('#content').html("Ada yang bermasalah dengan koneksi internet...");
+                    }
+                    , complete: function() {
+
+                    }
+                });
+            }
+            function set2Result(result, input0_, input_, type0_, menteri) {
+                try {
+                    $('#content').html("");
+                    $('#content').show();
+                    var tblb = $("<table>").appendTo($('#content'));
+                    var thead = $("<thead>").appendTo(tblb);
+                    var tfoot = thead;//$("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
+                    var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
+                    var tblhtr = $("<tr>").appendTo(thead);
+                    var th0 = $("<th>").text("No.").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th0).click(function() {
+                        sort(0);
+                    });
+                    var th1 = $("<th>").width("620px").css("font-size", "16px").text("Kandidat " + unescape(menteri)).appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th1).click(function() {
+                        sort2(1);
+                    });
+                    $("<th>").css("color", "navy").css("white-space", "initial").width(302).html("Apakah Anda Setuju Kandidat Berikut Menjadi " + unescape(menteri) + "?").appendTo(tblhtr);
+                    var i = 0;
+
+                    var likeSocial = '<div class="links">Share: '
+                            + ' <a href="#" data-type="twitter" data-url="' + window.location.href + '" data-description="Apa Pendapatmu? #kawalmenteri" data-via="kawalmenteri" class="prettySocial fa fa-twitter"></a>'
+                            + '<a href="#" data-type="facebook" data-url="' + window.location.href + '" data-title="kawalmenteri " data-description="Apa Pendapatmu? #kawalmenteri" data-media="https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-xap1/t31.0-8/10514377_353123581503496_2258141069498937437_o.jpg" class="prettySocial fa fa-facebook"></a>'
+                            + '<a href="#" data-type="googleplus" data-url="' + window.location.href + '" data-description="Apa Pendapatmu? #kawalmenteri" class="prettySocial fa fa-google-plus"></a>'
+                            + '</div>';
+                    th1.append($("<br>")).append($("<div>").attr("class", "social-container").html(likeSocial));
+                    $('.prettySocial').prettySocial();
+
+                    function createCol(tbody, data, i, type) {
+                        var a;
+                        if (type == "read") {
+                            tblhtr = $("<tr>").appendTo(tbody);
+                            $("<td>").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
+                            var tdx = $("<td>").width("620px").appendTo(tblhtr);
+                            var divx = $("<div>").html("");
+                            tdx.append($("<span>").html("<b>Nama</b>: " + data.kandidat));
+                            tdx.append($("<br>")).append($("<span>").html("<b>Deskripsi Umum</b>:&nbsp;" + data.desc));
+                            tdx.append($("<br>")).append(divx);
+                            var div1 = $("<div>").appendTo($("<td>").appendTo(tblhtr));
+                            getMyComment(div1, input_, replaceSpecial(data.kandidat), data, divx, tdx);
+                        }
+
+                        if (type == "write") {
+                            tblhtr = $("<tr>").css("background-color", "#CFE0F1").appendTo(tfoot);
+                            var td = $("<td>").appendTo(tblhtr).attr("colspan", "3");
+                            var div = $("<p>").hide().appendTo(td);
+                            var div0 = $("<p>").appendTo(td);
+                            var div1 = $("<span>").css("display", "inline").html("");
+                            div0.append($("<a>").css("font-size", "16px").attr("href", "javascript:").attr("class", "classa").text("Usulkan Kandidat Baru").click(function() {
+                                if (div.css("display") == "none") {
+                                    div.show();
+                                    $(this).html("Batalkan");
+                                    div.html("");
+                                    var input = $("<input>").css("width", "250px").css("font-size", "14px");
+                                    var input1 = $("<input>").css("width", "500px").css("font-size", "14px");
+                                    var input2 = $('<textarea><img src="http://img.freeflagicons.com/thumb/speech_bubble_icon/indonesia/indonesia_640.png" style="max-width:150px;"><b>Tempat & Tanggal Lahir: </b><span>???</span><br><b>Riwayat Pendidikan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Riwayat Kerja Profesional: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Riwayat Organisasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Keanggotaan/Asosiasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Prestasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Penghargaan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Kekayaan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Indikator Positif: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Indikator Negatif: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul></textarea>').css("width", "500px");
+                                    div.append($("<span>").html("<b>Nama</b>:<br>")).append(input).append($("<br>"))
+                                            .append($("<span>").html("<b>Deskripsi Umum</b>:<br>&nbsp;")).append(input1).append($("<br>"))
+                                            .append($("<span>").html("<b>Detail</b>:")).append(input2);
+                                    input2.jqte();
+                                    div1.append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;"));
+                                    div1.append($("<a>").css("font-size", "16px").attr("href", "javascript:").attr("class", "classa").text("Simpan").click(function() {
+                                        if (input.val().length == 0
+                                                || input1.val().length == 0
+                                                || input2.val().length == 0) {
+                                            alert("Silahkan Tuliskan Usulan Anda.")
+                                        } else {
+                                            var menteri_ = unescape(menteri);
+                                            $.ajax({
+                                                url: "/action?form_action=setSet2&session=" + Math.random()
+                                                , type: "POST"
+                                                , data: JSON.stringify({menteri: menteri_, input0: input0_, type0: type0_, input: input_, value: input.val(), value1: input1.val().substr(0, 200), value2: input2.val()})
+                                                , dataType: 'json'
+                                                , mimeType: "application/json"
+                                                , contentType: "application/json"
+                                                , cache: false
+                                                , success: function(result) {
+                                                    set2Result(result, input0_, input_, type0_, menteri);
+                                                }
+                                                , error: function() {
+                                                    $('#content').html("Ada yang bermasalah dengan koneksi internet...");
+                                                }
+                                                , complete: function() {
+                                                }
+                                            });
+                                        }
+                                    }));
+                                } else {
+                                    div.hide();
+                                    div.html("");
+                                    div1.html("");
+                                    $(this).html("Usulkan Kandidat Baru");
+                                }
+                            }));
+                            div1.appendTo(div0);
+                        }
+                    }
+                    $.each(result.records, function(k, c) {
+                        i++;
+                        createCol(tbody, c, i, "read")
+                    });
+                    if (userAccount.name) {
+                        i++;
+                        createCol(tbody, {kandidat: "", desc: "", detail: "", nama: userAccount.name, link: userAccount.link}, i, "write");
+                    }
+                    sort2(1);
+                } catch (e) {
+                }
+            }
+
+            function getimg(src, w) {
+                var img = $("<img>").attr("src", src).width(w);
+                return img;
+            }
+
+            function displayComment(td, result, showline) {
+                //var p=$("<p>").appendTo(td);
+                var tblb = $("<table>").css("border", "0px").appendTo(td);
+                var trb = $("<tr>").css("background-color", "transparent").appendTo(tblb);
+
+                if (parseInt(result.star) < 0) {
+                    $("<td>").css("text-align", "center").append(getimg("dislike_selected.png", 30)).appendTo(trb);
+                } else if (parseInt(result.star) > 0) {
+                    $("<td>").css("text-align", "center").append(getimg("like_selected.png", 30)).appendTo(trb);
+                } else {
+                    $("<td>").css("text-align", "center").html("&nbsp;").appendTo(trb);
+                }
+                td.append($("<a>").attr("href", result.link).attr("target", "_new").attr("class", "classa").text(result.name)).append($("<span>").html("&nbsp;")).append($("<span>").width(300).css("font-size", "12px").text(result.comment)).append($("<br>"))
+                td.append($("<span>").css("font-size", "9px").css("color", "#363C38").text(result.date));
+                if (showline) {
+                    td.append($("<hr>"));
+                }
+                if (!showline) {
+                    td.append($("<br>"));
+                    var divp = createPetunjuk(td);
+                    td.append($("<div>").append(divp));
+                }
+            }
+
+
+            function createLinkComment(result, data, divx) {
+                divx.html("");
+                var p = $("<p>").appendTo(divx);
+                var tbld = $("<table>").css("border", "0px").appendTo(p);
+                var trd = $("<tr>").css("border", "0px").css("background-color", "transparent").appendTo(tbld);
+                var divx0 = $("<div>").html("").hide();
+                var divx1 = $("<div>").html("").hide();
+                var divx2 = $("<div>").html("").hide();
+                var ax = $("<a>").css("font-size", "16px").css("color", "#207bf4").attr("href", "javascript:").attr("class", "classa").text("Detail").click(function() {
+                    if (divx0.css("display") == "none") {
+                        divx1.html("");
+                        divx2.html("");
+                        divx1.hide();
+                        divx2.hide();
+                        divx0.html("");
+                        divx0.show();
+                        divx0.append($("<span>").html("<b>Diusulkan oleh</b>: ")).append($("<a>").attr("class", "classa").css("font-size", "14px").attr("href", data.link).attr("target", data.nama).text(data.nama)).append($("<br>"))
+                        if (data.detail.toLowerCase().indexOf("<iframe") >= 0 && data.detail.toLowerCase().indexOf("</iframe>") >= 0) {
+                            //$("<div>").html(data.detail.replace("<iframe","<iframe frameBorder=\"0\" marginwidth=0 marginheight=0 hspace=0 vspace=0 scrolling=\"no\" style=\"overflow:visible;\" ")).appendTo(divx0);
+                            var divx = $("<div>").html(data.detail).appendTo(divx0);
+                            $(divx.children("iframe")[0]).attr("frameBorder", 0);
+                            $(divx.children("iframe")[0]).attr("width", 700);
+                            $(divx.children("iframe")[0]).attr("height", 500);
+                            $(divx.children("iframe")[0]).attr("marginheight", 0);
+                            $(divx.children("iframe")[0]).attr("marginwidth", 0);
+                            $(divx.children("iframe")[0]).attr("scrolling", "no");
+                            $(divx.children("iframe")[0]).css("overflow", "visible");
+                            $(divx.children("iframe")[0]).attr("scrolling", "yes");
+                            //var src=$(divx.children("iframe")[0]).attr("src");
+                            //$(divx.children("iframe")[0]).attr("src","");
+                            //divx.html("");
+                            //var data=$(divx.children("iframe")[0]).contents();
+                            //divx.css("height","500px").css("overflow","auto").html(data);
+                            return false;
+                            $(divx.children("iframe")[0]).load(function() {
+                                //console.log($(divx.children("iframe")[0]).contents().find('html').html())
+                            });
+                            $.ajax({
+                                url: "/action?form_action=getiframeData&session=" + Math.random()
+                                , type: "POST"
+                                , data: JSON.stringify({src: src})
+                                , dataType: 'json'
+                                , mimeType: "application/json"
+                                , contentType: "application/json"
+                                , cache: false
+                                , success: function(result) {
+                                    divx.css("height", "500px").css("overflow", "auto").html(result.data);
+                                }
+                                , error: function() {
+                                }
+                                , complete: function() {
+                                }
+                            });
+
+
+                        } else {
+                            var divx = $("<div>").html(data.detail).appendTo(divx0);
+                            divx.jqte();
+                            divx0.find('div.jqte_editor')[0].setAttribute("contenteditable", false);
+                            //divx0.find('div.jqte_editor')[0].style.width = "600px";
+                            divx0.find('div.jqte_toolbar')[0].innerHTML = "";
+                            //divx0.find('div.jqte_toolbar')[0].style.width = "600px";
+                            divx0.find('div.jqte_toolbar')[0].style.display = "none";
+                            //divx0.find('div.jqte')[0].style.width = "600px";
+                        }
+                    } else {
+                        divx0.html("");
+                        divx0.hide();
+                    }
+                });
+                var ax1 = $("<a>").attr("href", "javascript:").attr("class", "classax").append($("<span>").html("&nbsp;")).append(result.AlasanStarsp.length).append($("<span>").html("&nbsp;&nbsp;")).append(getimg("like_selected.png", 15)).append($("<span>").html("&nbsp;"))
+                        .attr("title", "Clik untuk lihat semua Komentar yang setuju...").click(function() {
+                    if (divx1.css("display") == "none") {
+                        divx0.html("");
+                        divx2.html("");
+                        divx0.hide();
+                        divx2.hide();
+                        divx1.show();
+                        divx1.html("");
+                        $.each(result.AlasanStarsp, function(k, c) {
+                            displayComment(divx1, c, true);
+                        })
+                    } else {
+                        divx1.hide();
+                    }
+                });
+                var ax2 = $("<a>").attr("href", "javascript:").attr("class", "classax").append($("<span>").html("&nbsp;")).append(result.AlasanStarsn.length).append($("<span>").html("&nbsp;&nbsp;")).append(getimg("dislike_selected.png", 15)).append($("<span>").html("&nbsp;"))
+                        .attr("title", "Clik untuk lihat semua Komentar yang tidak setuju...").click(function() {
+                    if (divx2.css("display") == "none") {
+                        divx0.html("");
+                        divx1.html("");
+                        divx0.hide();
+                        divx1.hide();
+                        divx2.show();
+                        divx2.html("");
+                        $.each(result.AlasanStarsn, function(k, c) {
+                            displayComment(divx2, c, true);
+                        })
+                    } else {
+                        divx2.hide();
+                    }
+                });
+
+                var tdline = $("<td>").append(ax1).appendTo(trd);
+                tdline.hover(function() {
+                    $(this).css("border-bottom", "2px solid #207bf4")
+                })
+                tdline.mouseleave(function() {
+                    $(this).css("border-bottom", "0px")
+                })
+                $("<td>").append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
+                var tdline1 = $("<td>").append(ax2).appendTo(trd);
+                tdline1.hover(function() {
+                    $(this).css("border-bottom", "2px solid #207bf4")
+                })
+                tdline1.mouseleave(function() {
+                    $(this).css("border-bottom", "0px")
+                })
+                $("<td>").append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;")).appendTo(trd);
+                if (parseInt(result.total) > 0) {
+                    $("<td>").append($("<span>").css("color", "#363C38").css("font-size", "14px").css("vertical-align", "bottom").html("<b>Total:&nbsp;&nbsp;" + result.total + "</b>&nbsp;&nbsp;")).append(getimg("like_selected.png", 15)).appendTo(trd);
+                } else if (parseInt(result.total) < 0) {
+                    $("<td>").append($("<span>").css("color", "#363C38").css("font-size", "14px").css("vertical-align", "bottom").html("<b>Total:&nbsp;&nbsp;" + (parseInt(result.total) * -1) + "</b>&nbsp;&nbsp;")).append(getimg("dislike_selected.png", 15)).appendTo(trd);
+                } else {
+                    $("<td>").append($("<span>").css("color", "#363C38").css("font-size", "14px").css("vertical-align", "bottom").html("<b>Total:&nbsp;&nbsp;" + result.total + "</b>&nbsp;&nbsp;")).appendTo(trd);
+
+                }
+                var trd1 = $("<tr>").css("border", "0px").css("background-color", "transparent").appendTo(tbld);
+                $("<td>").append(ax).appendTo(trd1);
+                divx.append(divx0).append(divx1).append(divx2);
+                return trd1;
+            }
+            function getMyComment(div1, dept, namaCalon, data, divx, tdx) {
+                div1.html("Sedang Mengambil Data...");
+                $.ajax({
+                    url: "/action?form_action=getMyComment&session=" + Math.random()
+                    , type: "POST"
+                    , data: JSON.stringify({dept: dept, namaCalon: namaCalon})
+                    , dataType: 'json'
+                    , mimeType: "application/json"
+                    , contentType: "application/json"
+                    , cache: false
+                    , success: function(result) {
+                        try {
+                            if (userAccount.id && result) {
+                                if (result.AlasanStar.id == userAccount.id) {
+                                    div1.html("");
+                                    displayComment(div1, result.AlasanStar, false);
+                                } else {
+                                    div1.html("");
+                                    setCommentCol(div1, dept, namaCalon, data, divx, tdx);
+                                }
+                            } else {
+                                div1.html("");
+                            }
+                            tdx.attr("data-sort-index", "1").attr("data-sort", parseInt(result.total));
+                        } catch (e) {
+                        }
+                        try {
+                            createLinkComment(result, data, divx);
+                        } catch (e) {
+                        }
+                    }
+                    , error: function() {
+                    }
+                    , complete: function() {
+                    }
+                });
+            }
+            function buildRate(div1) {
+                var div = $("<div>").data("val", "0");
+                var tblb = $("<table>").width(301).css("border", "0px").appendTo(div1);
+                var trb = $("<tr>").css("border", "0px").css("background-color", "transparent").appendTo(tblb);
+
+                var img = $("<img>").css("cursor", "pointer").attr("title", "Tidak Setuju").attr("src", "dislike.png").width(50).height(50);
+                var img1 = $("<img>").css("cursor", "pointer").attr("title", "Setuju").attr("src", "like.png").width(50).height(50);
+
+                img.hover(function() {
+                    $(this).attr("src", "dislike_selected.png");
+                });
+                img.mouseleave(function() {
+                    if (parseInt(div.data("val")) >= 0) {
+                        $(this).attr("src", "dislike.png");
+                    }
+                });
+                img.click(function() {
+                    if (parseInt(div.data("val")) >= 0) {
+                        $(this).attr("src", "dislike_selected.png");
+                        img1.attr("src", "like.png");
+                        div.data("val", "-1");
+                    }
+                });
+                img1.hover(function() {
+                    $(this).attr("src", "like_selected.png");
+                })
+                img1.mouseleave(function() {
+                    if (parseInt(div.data("val")) <= 0) {
+                        $(this).attr("src", "like.png");
+                    }
+                })
+                img1.click(function() {
+                    if (parseInt(div.data("val")) <= 0) {
+                        $(this).attr("src", "like_selected.png");
+                        img.attr("src", "dislike.png");
+                        div.data("val", "1");
+                    }
+                });
+                var td1 = $("<td>").attr("title", "Setuju").css("text-align", "center").width(145).appendTo(trb).append(img1);
+                $("<td>").css("text-align", "center").width(11).css("border", "0px").appendTo(trb).html("&nbsp;");
+                var td2 = $("<td>").attr("title", "Tidak Setuju").css("text-align", "center").width(145).appendTo(trb).append(img);
+
+
+
+                img.hover(function() {
+                    $(this).attr("src", "dislike_selected.png");
+                    td2.css("border-bottom", "2px solid #207bf4");
+                });
+                img.mouseleave(function() {
+                    if (parseInt(div.data("val")) >= 0) {
+                        $(this).attr("src", "dislike.png");
+                        td2.css("border", "0px");
+                    }
+
+                });
+                img.click(function() {
+                    if (parseInt(div.data("val")) >= 0) {
+                        $(this).attr("src", "dislike_selected.png");
+                        img1.attr("src", "like.png");
+                        div.data("val", "-1");
+                        td2.css("border-bottom", "2px solid #207bf4");
+
+                    }
+                    td1.css("border", "0px");
+                });
+                img1.hover(function() {
+                    $(this).attr("src", "like_selected.png");
+                    td1.css("border-bottom", "2px solid #207bf4");
+                })
+                img1.mouseleave(function() {
+                    if (parseInt(div.data("val")) <= 0) {
+                        $(this).attr("src", "like.png");
+                        td1.css("border", "0px");
+                    }
+                })
+                img1.click(function() {
+                    if (parseInt(div.data("val")) <= 0) {
+                        $(this).attr("src", "like_selected.png");
+                        img.attr("src", "dislike.png");
+                        div.data("val", "1");
+                        td1.css("border-bottom", "2px solid #207bf4");
+                    }
+                    td2.css("border", "0px");
+                });
+
+
+                return div;
+            }
+            function setCommentCol(div1, dept, namaCalon, data, divx, tdx) {
+                var div = buildRate(div1);
+                var textarea = $("<textarea>").attr("rows", "2").attr("cols", "40").appendTo(div1);
+                div1.append($("<br>"));
+                var divp = createPetunjuk(div1);
+                div1.append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;"));
+                div1.append($("<a>").attr("class", "classa").attr("href", "javascript:").text("Simpan").click(function() {
+                    if (textarea.val().length == 0 || parseInt(div.data("val")) == 0) {
+                        alert("Silahkan Tentukan Penilaian berserta Alasan Anda");
+                    } else {
+                        $.ajax({
+                            url: "/action?form_action=postComment&session=" + Math.random()
+                            , type: "POST"
+                            , data: JSON.stringify({dept: dept, star: div.data("val"), comment: textarea.val(), namaCalon: namaCalon})
+                            , dataType: 'json'
+                            , mimeType: "application/json"
+                            , contentType: "application/json"
+                            , cache: false
+                            , success: function(result) {
+                                try {
+                                    getMyComment(div1, dept, namaCalon, data, divx, tdx);
+                                } catch (e) {
+
+                                }
+                            }
+                            , error: function() {
+
+                            }
+                            , complete: function() {
+
+                            }
+                        });
+
+                    }
+                    //return false;
+                }));
+                div1.append($("<br>")).append(divp);
+            }
+            function createPetunjuk(td) {
+                var divp = $("<div>");
+                $("<a>").attr("class", "classa").attr("href", "javascript:").text("Petunjuk").appendTo(td).click(function() {
+                    if (divp.css("display") == "none") {
+                        divp.show();
+                        divp.html("");
+                        divp.append(getimg("like_selected.png", 15)).append($("<span>").html("&nbsp;&nbsp;artinya Setuju"))
+                        divp.append($("<br>")).append(getimg("dislike_selected.png", 15)).append($("<span>").html("&nbsp;&nbsp;artinya Tidak Setuju"))
+                    } else {
+                        divp.hide();
+                    }
+                });
+                divp.hide();
+                return divp;
+            }
+            function showvideo() {
+                if ($("#fbvideo").css("display") == "none") {
+                    $("#fbvideo").show();
+                    $("#fbvideolink").html("Tutup Facebook Frame");
+                } else {
+                    $("#fbvideo").hide();
+                    $("#fbvideolink").html("Kunjungi Facebook Page");
+                }
+            }
+
+        </script>
+
+        <div id="headerdiv" style="width:100%;">
+            <table style="width:100%;">
+                <tr style="height: 28px;background-color: transparent;vertical-align: bottom;">
+                    <td style="width: 40%;background-color: transparent;white-space:nowrap;">
+                        <p align="left" style="padding:0px;margin: 0px;">
+                        <div style="display: inline-table">Selamat Datang</div>
+                        <div id="acctName" style="display: inline-table"></div>
+                        <div class="social-likes" style="display: inline-table">
+                            <div class="facebook" title="Share link on Facebook">Facebook</div>
+                            <div class="twitter" title="Share link on Twitter">Twitter</div>
+                            <div class="plusone" title="Share link on Google+">Google+</div>
+                        </div>
+                        </p>
+                    </td>
+                    <td style="width: 60%;font-weight: bolder; background-color: transparent;white-space:nowrap;">
+                        <p align="right" style="padding:0px;margin: 0px;">
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="javascript:" class="classaa" id="apakawal">Apa itu KawalMenteri?</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="javascript:" class="classaa" id="kenapakawal">Mengapa KawalMenteri?</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="https://docs.google.com/document/d/1po6fsXFLDgVHP-1sd6dy2Gput_SqfBigGLw13rfrPMs/edit?usp=sharing" class="classaa" id="carakawal" target="newtarget">Cara Berpartisipasi?</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="https://docs.google.com/spreadsheets/d/1v6_bhQfa6gDuNwip8iFgw-Ju2X5NDgoddFGoC0snCGc/edit?usp=sharing" class="classaa" id="bergabungkawal" target="newtarget">Ingin Bergabung?</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="javascript:showvideo()" id="fbvideolink" class="classaa">Kunjungi Facebook Page</a>
+                            <span>&nbsp;|&nbsp;</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="background-color: transparent;">
+                    <td style="width: 40%;">&nbsp;</td>
+                    <td style="width: 60%;text-align: right;background-color: transparent;" id="kawaldetail"></td>
+                </tr>
+            </table>
+            <script>
+                $("#apakawal").click(function() {
+                    $("#kawaldetail").html("KawalMenteri adalah sebuah platform partisipasi public melalui media internet yang memungkinkan semua masyarakat Indonesia menyampaikan pendapat dan penilaiannya terhadap para bakal calon Menteri dan kinerja Menteri yang telah terpilih dalam Kabinet Pemerintahan Periode 2014-2019.<br><a href='javascript:'  class='classaa' style='color:red;' onclick='$(\"#kawaldetail\").html(\"\")'>Tutup</a>");
+                });
+                $("#kenapakawal").click(function() {
+                    $("#kawaldetail").html("KawalMenteri diperlukan untuk memfasilitasi arus baru demokrasi yang partisipatif, transparan, dan akuntabel sehingga memungkinkan adanya penyampaian langsung pendapat dan penilaian public terhadap para pejabat public dalam hal ini Menteri. Sebelum itu, pendapat dan penilaian public juga disampaikan terkait para bakal calon Menteri yang dianggap layak untuk menjadi anggota Menteri pada Kabinet Pemerintahan Periode 2014-2019.<br><a href='javascript:'  class='classaa' style='color:red;' onclick='$(\"#kawaldetail\").html(\"\")'>Tutup</a>");
+                });
+            </script>
+            <table style="width:100%;">
+                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;color: red;">Admin Kawal Menteri sedang memasukan master data Kementerian Beserta Para Kandidatnya. Target Selesai tanggal 11-Agustus-2014 Jam 18:00 WIB</td></tr>
+                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;color: red;">Semua Komentar dan Penilaian (Setuju atau tidak setuju berserta alasan) akan di-reset (hapus) Tanggal 11-Agustus-2014 Jam 18:00 WIB</td></tr>
+                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;color: red;"><a target="_blank" href="https://docs.google.com/document/d/1Aj7GssygE5Z5jbth9CNHDRkh_z8ibk5bkAeGjZS_E6k/edit?usp=sharing">Pertemuan Berikutnya Tanggal 11-Agustus-2014 Jam 18:30 WIB (Google Hangout akan dishare. Tebuka untuk umum)</a></td></tr>
+                <tr style="background-color: transparent;"><td colspan="2" style="text-align: left;background-color: transparent;color: red;">Google Hangout di sini&nbsp;<a target="_blank" href="https://plus.google.com/hangouts/_/e6ftmjkgdcb7stgumnf5urweuab">https://plus.google.com/hangouts/_/e6ftmjkgdcb7stgumnf5urweuab</a></td></tr>
+            </table>
+            <br/>
+            <div id="fbvideo" style="display:none;">
+                <div class="fb-post" data-href="https://www.facebook.com/photo.php?v=353140568168464" data-width="750"><div class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/photo.php?v=353140568168464">Post</a> by <a href="https://www.facebook.com/KawalMenteri">Kawal Menteri</a>.</div></div>
+            </div>
+        </div>
+        <hr><br>
+
+        <div  draggable="false" style="vertical-align:bottom;margin:0px;padding:0px;">
+            <table style="vertical-align:bottom;margin:0px;padding:0px;">
+                <tr style="vertical-align:bottom;">
+                    <td id="divLogin" style="vertical-align:bottom;height:36px; ">
+                        <span id="signinButton">
+                            <span
+                                class="g-signin"
+                                data-callback="signinCallback"
+                                data-clientid="73076422642-bbnad8h46541i2mfn05gftuj98c8ed1c.apps.googleusercontent.com"
+                                data-cookiepolicy="single_host_origin"
+                                data-requestvisibleactions="http://schema.org/AddAction"
+                                data-scope="https://www.googleapis.com/auth/plus.login">
+                            </span>
+                        </span>
+                    </td>
+                    <td id="loginFBbutton" style="vertical-align:bottom;height:36px;">
+                        <div class="fb-login-button"  data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" scope="public_profile,email" data-scope="public_profile,email" onlogin="checkLoginState();" style="height:36px;"></div>
+                    </td>
+                </tr></table>            
+        </div>        
+        <div><p id="navTop"></p></div>
+        <div id="content"></div>
+        <div><p id="navBottom"></p></div>
+        <br/><br/>
+        <div id="footerdiv"></div>
+        <br/><br/>
+        <hr>
+        <span style="font-size: 9px;">@118142010SGT</span>
+    </body>
+</html>
