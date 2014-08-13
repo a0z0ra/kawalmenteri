@@ -150,7 +150,7 @@ public class action extends HttpServlet {
                 //JSONArray records = (JSONArray) obj;
                 JSONObject obj1 = (JSONObject) obj;
                 String src = obj1.get("src").toString();
-                
+
                 final URL url = new URL(src);
                 final URLConnection urlConnection = url.openConnection();
                 urlConnection.setDoOutput(true);
@@ -166,7 +166,7 @@ public class action extends HttpServlet {
                     read = br.readLine();
                 }
                 record.put("data", sb1.toString());
-               record.put("status", "OK");
+                record.put("status", "OK");
             } catch (Exception e) {
                 record.put("status", "error");
                 record.put("errormsg", e.toString());
@@ -195,7 +195,7 @@ public class action extends HttpServlet {
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
                 postData(name, dept, "", star, comment, id, "AlasanStarPosisi", dept, link, link);
-                postData2(name, dept, "", star, comment, id, "AlasanStarCalonPosisi", "dept", dept, link);
+                postData(name, dept, "", star, comment, id, "AlasanStarCalonPosisi", "dept", dept, link);
 
                 record.put("status", "OK");
             } catch (Exception e) {
@@ -333,7 +333,7 @@ public class action extends HttpServlet {
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
                 postData(name, dept, namaCalon, star, comment, id, "AlasanStar", dept + namaCalon, link, link);
-                postData2(name, dept, namaCalon, star, comment, id, "AlasanStarCalon", dept, namaCalon, link);
+                postData(name, dept, namaCalon, star, comment, id, "AlasanStarCalon", dept, namaCalon, link);
 
                 record.put("status", "OK");
             } catch (Exception e) {
@@ -700,17 +700,21 @@ public class action extends HttpServlet {
                 JSONArray obj11 = new JSONArray();
                 JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
                 String id = userAccount.get("id").toString();
+                String nama = userAccount.get("name").toString();
+                String email = userAccount.get("email").toString();
+                String link = userAccount.get("link").toString();
+                String admin = userAccount.get("admin").toString();
                 for (Entity typeEntity : pq.asIterable()) {
                     String reviewed = typeEntity.getProperty("reviewed").toString();
                     if (reviewed.equalsIgnoreCase("Y")) {
                         LinkedHashMap record1 = new LinkedHashMap();
                         String posisi = typeEntity.getProperty("posisi").toString();
-                        String nama = typeEntity.getProperty("nama").toString();
-                        String link = typeEntity.getProperty("link").toString();
+                        String nama1 = typeEntity.getProperty("nama").toString();
+                        String link1 = typeEntity.getProperty("link").toString();
                         String date = typeEntity.getProperty("date").toString();
                         record1.put("posisi", posisi);
-                        record1.put("nama", nama);
-                        record1.put("link", link);
+                        record1.put("nama", nama1);
+                        record1.put("link", link1);
                         record1.put("date", date);
                         String detail1 = "";
                         try {
@@ -723,15 +727,19 @@ public class action extends HttpServlet {
                         obj11.add(record1);
                     } else {
                         String user = typeEntity.getProperty("user").toString();
-                        if (user.equalsIgnoreCase(id)) {
+                        if (user.equalsIgnoreCase(id) || (email.equalsIgnoreCase("khairul.anshar@gmail.com")
+                                || id.equalsIgnoreCase("112525777678499279265")
+                                || id.equalsIgnoreCase("10152397276159760")
+                                || nama.equalsIgnoreCase("Khairul Anshar")
+                                || admin.equalsIgnoreCase("Y"))) {
                             LinkedHashMap record1 = new LinkedHashMap();
                             String posisi = typeEntity.getProperty("posisi").toString();
-                            String nama = typeEntity.getProperty("nama").toString();
-                            String link = typeEntity.getProperty("link").toString();
+                            String nama1 = typeEntity.getProperty("nama").toString();
+                            String link1 = typeEntity.getProperty("link").toString();
                             String date = typeEntity.getProperty("date").toString();
                             record1.put("posisi", posisi);
-                            record1.put("nama", nama);
-                            record1.put("link", link);
+                            record1.put("nama", nama1);
+                            record1.put("link", link1);
                             record1.put("date", date);
                             String detail1 = "";
                             try {
@@ -781,9 +789,18 @@ public class action extends HttpServlet {
                 PreparedQuery pq = datastore.prepare(query);
                 JSONArray obj11 = new JSONArray();
                 String id = "";
+                String nama = "";
+                String email = "";
+                String link = "";
+                String admin = "";
                 try {
                     JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
                     id = userAccount.get("id").toString();
+                    id = userAccount.get("id").toString();
+                    nama = userAccount.get("name").toString();
+                    email = userAccount.get("email").toString();
+                    link = userAccount.get("link").toString();
+                    admin = userAccount.get("admin").toString();
                 } catch (Exception ex1) {
                 }
                 for (Entity typeEntity : pq.asIterable()) {
@@ -794,32 +811,36 @@ public class action extends HttpServlet {
                         String desc = typeEntity.getProperty("desc").toString();
                         Text detail0 = (Text) typeEntity.getProperty("detail");
                         String detail = detail0.getValue();
-                        String nama = typeEntity.getProperty("nama").toString();
-                        String link = typeEntity.getProperty("link").toString();
+                        String nama1 = typeEntity.getProperty("nama").toString();
+                        String link1 = typeEntity.getProperty("link").toString();
                         String date = typeEntity.getProperty("date").toString();
                         record1.put("kandidat", kandidat);
                         record1.put("desc", desc);
                         record1.put("detail", detail);
-                        record1.put("nama", nama);
-                        record1.put("link", link);
+                        record1.put("nama", nama1);
+                        record1.put("link", link1);
                         record1.put("date", date);
                         obj11.add(record1);
                     } else {
                         String user = typeEntity.getProperty("user").toString();
-                        if (user.equalsIgnoreCase(id)) {
+                        if (user.equalsIgnoreCase(id) || (email.equalsIgnoreCase("khairul.anshar@gmail.com")
+                                || id.equalsIgnoreCase("112525777678499279265")
+                                || id.equalsIgnoreCase("10152397276159760")
+                                || nama.equalsIgnoreCase("Khairul Anshar")
+                                || admin.equalsIgnoreCase("Y"))) {
                             LinkedHashMap record1 = new LinkedHashMap();
                             String kandidat = typeEntity.getProperty("kandidat").toString();
                             String desc = typeEntity.getProperty("desc").toString();
                             Text detail0 = (Text) typeEntity.getProperty("detail");
                             String detail = detail0.getValue();
-                            String nama = typeEntity.getProperty("nama").toString();
-                            String link = typeEntity.getProperty("link").toString();
+                            String nama1 = typeEntity.getProperty("nama").toString();
+                            String link1 = typeEntity.getProperty("link").toString();
                             String date = typeEntity.getProperty("date").toString();
                             record1.put("kandidat", kandidat);
                             record1.put("desc", desc);
                             record1.put("detail", detail);
-                            record1.put("nama", nama);
-                            record1.put("link", link);
+                            record1.put("nama", nama1);
+                            record1.put("link", link1);
                             record1.put("date", date);
                             obj11.add(record1);
                         }
