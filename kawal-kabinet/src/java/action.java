@@ -206,11 +206,143 @@ public class action extends HttpServlet {
             out.print(JSONValue.toJSONString(record));
             out.flush();
         }
+        if (form_action.equalsIgnoreCase("postLikeComment")) {
+            StringBuffer sb = new StringBuffer();
+            String line = null;
+            LinkedHashMap record = new LinkedHashMap();
+            try {
+                BufferedReader reader = request.getReader();
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                Object obj = JSONValue.parse(sb.toString());
+                //JSONArray records = (JSONArray) obj;
+                JSONObject obj1 = (JSONObject) obj;
+                String id = obj1.get("id").toString();
+                String star = obj1.get("star").toString();
+
+                JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
+                String name = userAccount.get("name").toString();
+                String link = userAccount.get("link").toString();
+                postData1("AlasanLike", id, link, star, link, name);
+                postData1("AlasanStarLike", "id", id, star, link, name);
+
+                record.put("status", "OK");
+            } catch (Exception e) {
+                record.put("status", "error");
+                record.put("errormsg", e.toString());
+            }
+            response.setContentType("text/html;charset=UTF-8");
+            out.print(JSONValue.toJSONString(record));
+            out.flush();
+        }
+        if (form_action.equalsIgnoreCase("getLikeComment")) {
+            StringBuffer sb = new StringBuffer();
+            String line = null;
+            LinkedHashMap record = new LinkedHashMap();
+            String idx_ = "";
+            try {
+                BufferedReader reader = request.getReader();
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                Object obj = JSONValue.parse(sb.toString());
+                //JSONArray records = (JSONArray) obj;
+                JSONObject obj1 = (JSONObject) obj;
+                idx_ = obj1.get("id").toString();
+                DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+                LinkedHashMap record1 = new LinkedHashMap();
+                try {
+                    JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
+                    String link_ = userAccount.get("link").toString();
+                    Key guestbookKey = KeyFactory.createKey(idx_, link_);
+                    // Run an ancestor query to ensure we see the most up-to-date
+                    // view of the Greetings belonging to the selected Guestbook.
+                    Query query = new Query("AlasanLike", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+                    //List<Entity> AlasanStars = datastore.prepare(query);
+                    PreparedQuery pq = datastore.prepare(query);
+                    for (Entity AlasanStar : pq.asIterable()) {
+                        String date = AlasanStar.getProperty("date").toString();
+                        String star = AlasanStar.getProperty("star").toString();
+                        String name = AlasanStar.getProperty("user").toString();
+                        String link = AlasanStar.getProperty("link").toString();
+                        record1.put("date", date);
+                        record1.put("star", star);
+                        record1.put("name", name);
+                        record1.put("link", link);
+                    }
+                } catch (Exception e) {
+                }
+                record.put("AlasanStar", record1);
+
+                Key guestbookKey = KeyFactory.createKey("id", idx_);
+                // Run an ancestor query to ensure we see the most up-to-date
+                // view of the Greetings belonging to the selected Guestbook.
+                Query query = new Query("AlasanStarLike", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+                //List<Entity> AlasanStars = datastore.prepare(query);
+                PreparedQuery pq = datastore.prepare(query);
+                JSONArray obj11 = new JSONArray();
+                JSONArray obj11p = new JSONArray();
+                JSONArray obj11n = new JSONArray();
+                int i = 0;
+                int ip = 0;
+                int in = 0;
+                double total = 0;
+                double totalp = 0;
+                double totaln = 0;
+                for (Entity AlasanStar : pq.asIterable()) {
+                    record1 = new LinkedHashMap();
+                    String date = AlasanStar.getProperty("date").toString();
+                    String star = AlasanStar.getProperty("star").toString();
+                    String name = AlasanStar.getProperty("user").toString();
+                    String link = AlasanStar.getProperty("link").toString();
+                    record1.put("date", date);
+                    record1.put("star", star);
+                    record1.put("name", name);
+                    record1.put("link", link);
+                    obj11.add(record1);
+                    i++;
+                    double d = Double.parseDouble(star);
+                    total = total + d;
+                    if (d >= 0) {
+                        obj11p.add(record1);
+                        ip++;
+                        totalp = totalp + d;
+                    } else {
+                        obj11n.add(record1);
+                        in++;
+                        totaln = totaln + d;
+                    }
+                }
+                double avg = total / i;
+                if (i == 0) {
+                    avg = 0;
+                }
+                DecimalFormat df = new DecimalFormat("#.##");
+                record.put("total", total);
+                record.put("totalp", totalp);
+                record.put("totaln", totaln);
+                record.put("avg", df.format(avg));
+                //record.put("AlasanStars", obj11);
+                record.put("AlasanStarsp", obj11p);
+                record.put("AlasanStarsn", obj11n);
+                record.put("status", "OK");
+            } catch (Exception e) {
+                record.put("status", "error");
+                record.put("errormsg", e.toString());
+            }
+            response.setContentType("text/html;charset=UTF-8");
+            out.print(JSONValue.toJSONString(record));
+            out.flush();
+        }
         if (form_action.equalsIgnoreCase("getMyCommentPosisi")) {
             StringBuffer sb = new StringBuffer();
             String line = null;
             LinkedHashMap record = new LinkedHashMap();
             String dept = "";
+            DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+            LinkedHashMap record1 = new LinkedHashMap();
+
             try {
                 BufferedReader reader = request.getReader();
                 while ((line = reader.readLine()) != null) {
@@ -220,39 +352,42 @@ public class action extends HttpServlet {
                 //JSONArray records = (JSONArray) obj;
                 JSONObject obj1 = (JSONObject) obj;
                 dept = obj1.get("dept").toString();
-                JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                String id_ = userAccount.get("id").toString();
-                String link_ = userAccount.get("link").toString();
-                DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-                Key guestbookKey = KeyFactory.createKey(dept, link_);
-                // Run an ancestor query to ensure we see the most up-to-date
-                // view of the Greetings belonging to the selected Guestbook.
-                Query query = new Query("AlasanStarPosisi", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
-                //List<Entity> AlasanStars = datastore.prepare(query);
-                PreparedQuery pq = datastore.prepare(query);
-                LinkedHashMap record1 = new LinkedHashMap();
-                for (Entity AlasanStar : pq.asIterable()) {
-                    String id = AlasanStar.getProperty("user").toString();
-                    String date = AlasanStar.getProperty("date").toString();
-                    String star = AlasanStar.getProperty("star").toString();
-                    String comment = AlasanStar.getProperty("comment").toString();
-                    String name = AlasanStar.getProperty("name").toString();
-                    String link = AlasanStar.getProperty("link").toString();
-                    record1.put("id", id);
-                    record1.put("date", date);
-                    record1.put("star", star);
-                    record1.put("comment", comment);
-                    record1.put("name", name);
-                    record1.put("link", link);
+                try {
+                    JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
+                    String id_ = userAccount.get("id").toString();
+                    String link_ = userAccount.get("link").toString();
+                    Key guestbookKey = KeyFactory.createKey(dept, link_);
+                    // Run an ancestor query to ensure we see the most up-to-date
+                    // view of the Greetings belonging to the selected Guestbook.
+                    Query query = new Query("AlasanStarPosisi", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+                    //List<Entity> AlasanStars = datastore.prepare(query);
+                    PreparedQuery pq = datastore.prepare(query);
+                    for (Entity AlasanStar : pq.asIterable()) {
+                        String id = AlasanStar.getProperty("user").toString();
+                        String date = AlasanStar.getProperty("date").toString();
+                        String star = AlasanStar.getProperty("star").toString();
+                        String comment = AlasanStar.getProperty("comment").toString();
+                        String name = AlasanStar.getProperty("name").toString();
+                        String link = AlasanStar.getProperty("link").toString();
+                        String id__ = AlasanStar.getKey().toString();
+                        record1.put("id_", id__);
+                        record1.put("id", id);
+                        record1.put("date", date);
+                        record1.put("star", star);
+                        record1.put("comment", comment);
+                        record1.put("name", name);
+                        record1.put("link", link);
+                    }
+                } catch (Exception e) {
                 }
                 record.put("AlasanStar", record1);
 
-                guestbookKey = KeyFactory.createKey("dept", dept);
+                Key guestbookKey = KeyFactory.createKey("dept", dept);
                 // Run an ancestor query to ensure we see the most up-to-date
                 // view of the Greetings belonging to the selected Guestbook.
-                query = new Query("AlasanStarCalonPosisi", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+                Query query = new Query("AlasanStarCalonPosisi", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
                 //List<Entity> AlasanStars = datastore.prepare(query);
-                pq = datastore.prepare(query);
+                PreparedQuery pq = datastore.prepare(query);
                 JSONArray obj11 = new JSONArray();
                 JSONArray obj11p = new JSONArray();
                 JSONArray obj11n = new JSONArray();
@@ -271,6 +406,8 @@ public class action extends HttpServlet {
                     comment = comment.replaceAll("\n", "<br/>");
                     String name = AlasanStar.getProperty("name").toString();
                     String link = AlasanStar.getProperty("link").toString();
+                    String id__ = AlasanStar.getKey().toString();
+                    record1.put("id_", id__);
                     record1.put("id", id);
                     record1.put("date", date);
                     record1.put("star", star);
@@ -378,6 +515,8 @@ public class action extends HttpServlet {
                     String comment = AlasanStar.getProperty("comment").toString();
                     String name = AlasanStar.getProperty("name").toString();
                     String link = AlasanStar.getProperty("link").toString();
+                    String id__ = AlasanStar.getKey().toString();
+                    record1.put("id_", id__);
                     record1.put("id", id);
                     record1.put("date", date);
                     record1.put("star", star);
@@ -411,6 +550,8 @@ public class action extends HttpServlet {
                     comment = comment.replaceAll("\n", "<br/>");
                     String name = AlasanStar.getProperty("name").toString();
                     String link = AlasanStar.getProperty("link").toString();
+                    String id__ = AlasanStar.getKey().toString();
+                    record1.put("id_", id__);
                     record1.put("id", id);
                     record1.put("date", date);
                     record1.put("star", star);
@@ -486,6 +627,8 @@ public class action extends HttpServlet {
                     comment = comment.replaceAll("\n", "<br/>");
                     String name = AlasanStar.getProperty("name").toString();
                     String link = AlasanStar.getProperty("link").toString();
+                    String id__ = AlasanStar.getKey().toString();
+                    record1.put("id_", id__);
                     record1.put("id", id);
                     record1.put("date", date);
                     record1.put("star", star);
@@ -1008,6 +1151,35 @@ public class action extends HttpServlet {
                 AlasanStar.setProperty("comment", comment);
                 AlasanStar.setProperty("name", name);
                 AlasanStar.setProperty("namaCalon", namaCalon);
+                AlasanStar.setProperty("link", link);
+                datastore.put(AlasanStar);
+            }
+
+        }
+    }
+
+    private void postData1(String table, String key, String keyVal, String val, String link, String user) {
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key guestbookKey = KeyFactory.createKey(key, keyVal);
+        // Run an ancestor query to ensure we see the most up-to-date
+        // view of the Greetings belonging to the selected Guestbook.
+        Query query = new Query(table, guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+        List<Entity> AlasanStars = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1));
+        Date date = new Date();
+
+        if (AlasanStars.isEmpty()) {
+            Entity AlasanStar = new Entity(table, guestbookKey);
+            AlasanStar.setProperty("user", user);
+            AlasanStar.setProperty("date", date);
+            AlasanStar.setProperty("star", val);
+            AlasanStar.setProperty("link", link);
+            datastore.put(AlasanStar);
+        } else {
+            for (Entity AlasanStar : AlasanStars) {
+                AlasanStar.setProperty("user", user);
+                AlasanStar.setProperty("date", date);
+                AlasanStar.setProperty("star", val);
                 AlasanStar.setProperty("link", link);
                 datastore.put(AlasanStar);
             }

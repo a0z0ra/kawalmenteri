@@ -100,3 +100,61 @@ tr:nth-child(odd) { background:  #fbfbfb;}
     background-image: url(dislike_selected.png);
     width: 30px;
 }
+
+
+.web_dialog_overlay
+{
+   position: fixed;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   height: 100%;
+   width: 100%;
+   margin: 0;
+   padding: 0;
+   background: #000000;
+   opacity: .03;
+   filter: alpha(opacity=3);
+   -moz-opacity: .03;
+   z-index: 101;
+   display: none;
+}
+.web_dialog
+{
+   display: none;
+   position: fixed;
+   width: 380px;
+   
+   top: 50%;
+   left: 50%;
+   margin-left: -190px;
+   margin-top: -100px;
+   background-color: #ffffff;
+   border: 2px solid #CFE0F1;
+   padding: 0px;
+   z-index: 102;
+   font-family: Verdana;
+   font-size: 10pt;
+   
+   
+   
+   
+}
+.web_dialog_title
+{
+   border-bottom: solid 2px #CFE0F1;
+   background-color: #CFE0F1;
+   padding: 4px;
+   color: black;
+   font-weight:bold;
+}
+.web_dialog_title a
+{
+   color: black;
+   text-decoration: none;
+}
+.align_right
+{
+   text-align: right;
+}
