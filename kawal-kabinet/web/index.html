@@ -83,7 +83,7 @@
                     return;
                 js = d.createElement(s);
                 js.id = id;
-                js.src = "//connect.facebook.net/en_US/sdk.js";
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
 
@@ -661,9 +661,9 @@
 
 
                 if (parseInt(result.star) < 0) {
-                    $("<span>").css("text-align", "center").append(getimg("dislike_selected.png", 20)).appendTo(td);
+                    $("<span>").css("text-align", "center").append(getimg("dislike_selected.png", 15)).appendTo(td);
                 } else if (parseInt(result.star) > 0) {
-                    $("<span>").css("text-align", "center").append(getimg("like_selected.png", 20)).appendTo(td);
+                    $("<span>").css("text-align", "center").append(getimg("like_selected.png", 15)).appendTo(td);
                 } else {
                     $("<span>").css("text-align", "center").html("&nbsp;").appendTo(td);
                 }
@@ -675,8 +675,8 @@
                 }
                 if (!showline) {
                     td.append($("<br>"));
-                    var divp = createPetunjuk(td);
-                    td.append($("<div>").append(divp));
+                    //var divp = createPetunjuk(td);
+                    //td.append($("<div>").append(divp));
                 }
             }
 
@@ -700,6 +700,8 @@
                         divx0.append($("<span>").html("<b>Diusulkan oleh</b>: ")).append($("<a>").attr("class", "classa").css("font-size", "14px").attr("href", data.link).attr("target", data.nama).text(data.nama)).append($("<br>"))
                         if (data.detail.toLowerCase().indexOf("<iframe") >= 0 && data.detail.toLowerCase().indexOf("</iframe>") >= 0) {
                             //$("<div>").html(data.detail.replace("<iframe","<iframe frameBorder=\"0\" marginwidth=0 marginheight=0 hspace=0 vspace=0 scrolling=\"no\" style=\"overflow:visible;\" ")).appendTo(divx0);
+                            var sumber = $("<span>").html("<b>Sumber</b>: ").appendTo(divx0);
+                            divx0.append($("<br>"));
                             var divx = $("<div>").html(data.detail).appendTo(divx0);
                             $(divx.children("iframe")[0]).attr("frameBorder", 0);
                             $(divx.children("iframe")[0]).attr("width", 700);
@@ -709,6 +711,10 @@
                             $(divx.children("iframe")[0]).attr("scrolling", "no");
                             $(divx.children("iframe")[0]).css("overflow", "visible");
                             $(divx.children("iframe")[0]).attr("scrolling", "yes");
+                            var src=($(divx.children("iframe")[0]).attr("src")).replace("/preview","");
+                            sumber.append($("<a>").attr("class", "classa").css("font-size", "14px").attr("href", src).attr("target", data.nama).text(src));
+                            
+
                             //var src=$(divx.children("iframe")[0]).attr("src");
                             //$(divx.children("iframe")[0]).attr("src","");
                             //divx.html("");
@@ -1003,6 +1009,9 @@
                     $("#fbvideolink").html("Kunjungi Facebook Page");
                 }
             }
+            function openIngin() {
+                window.open("https://docs.google.com/forms/d/1aNsrXEvgO1tDj_z3Zx6vOdc_JqeHexfl_r0J5leLFUk/viewform?usp=send_form","newtarget")
+            }
 
         </script>
         <div id="headerdiv" style="width:100%;">
@@ -1028,9 +1037,11 @@
                             <span>&nbsp;|&nbsp;</span>
                             <a href="https://docs.google.com/document/d/1po6fsXFLDgVHP-1sd6dy2Gput_SqfBigGLw13rfrPMs/edit?usp=sharing" class="classaa" id="carakawal" target="newtarget">Cara Berpartisipasi?</a>
                             <span>&nbsp;|&nbsp;</span>
-                            <a href="https://docs.google.com/spreadsheets/d/1v6_bhQfa6gDuNwip8iFgw-Ju2X5NDgoddFGoC0snCGc/edit?usp=sharing" class="classaa" id="bergabungkawal" target="newtarget">Ingin Bergabung di Tim Kementerian?</a>
+                            <a href="javascript:openIngin()" class="classaa" id="bergabungkawal" target="newtarget">Ingin Bergabung di Tim Kementerian?</a>
                             <span>&nbsp;|&nbsp;</span>
-                            <a href="javascript:showvideo()" id="fbvideolink" class="classaa">Kunjungi Facebook Page</a>
+                            <a href="https://www.facebook.com/KawalMenteri" target="newtarget" class="classaa"><img src="fb.png" width="15" height="15" alt="kawalmenteri">facebook</a>
+                            <span>&nbsp;|&nbsp;</span>
+                            <a href="https://twitter.com/kawalmenteri" target="newtarget" class="classaa"><img src="twitter.png" width="15" height="15" alt="kawalmenteri">Twitter</a>
                             <span>&nbsp;|&nbsp;</span>
                         </p>
                     </td>
@@ -1079,7 +1090,7 @@
                                     }
                                 });
                                 GetCount();
-                                $("#countdown").click(function(){
+                                $("#countdown").click(function() {
                                     window.open("https://www.facebook.com/events/1461184610799851/", 'a1461184610799851');
                                 })
                             });
@@ -1173,6 +1184,6 @@
         <div id="footerdiv"></div>
         <br/><br/>
         <hr>
-        <span style="font-size: 9px;">@128142310SGT</span>
+        <span style="font-size: 9px;">@138141710SGT</span>
     </body>
 </html>
