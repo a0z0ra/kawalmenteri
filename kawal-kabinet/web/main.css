@@ -1,7 +1,22 @@
+body {    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif; font-size:14px; letter-spacing:1px; }
+#headerdiv {width:100%; margin-top:35px;}
+#title {margin-left:20px;}
+#title, #navlinks, #selamatdatang  { display:inline-block;}
+#selamatdatang {position:absolute;padding:10px;top:0;right:0;background-color:#EFEFEF;}
+#navlinks  { margin:0px; padding:0px; }
+#navlinks li { display:inline-block; border-left:1px solid; padding:0 5px;}
+#navlinks li:first-child {border:0px;}
+#kawaldetailtr {padding:20px 20px 30px; margin:0 20px 20px; background-color:#EFEFEF;display:none; line-height:15pt; }
+#twitterwidget, #countdown {margin:20px;}
+.external-link {background:url('external-link-ltr-icon.png') no-repeat right top; padding-right:12px;}
+.right {float:right;}
+.left {float:left;}
+
+#content {width:85%;}
+#content table {width:100%;}
 table {
     border:1px solid white;
     font-size:14px;
-    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
 }
 td {
     color:#000000;
@@ -20,14 +35,12 @@ tr:nth-child(even) { background: #EEE;}
 tr:nth-child(odd) { background:  #fbfbfb;}
 
 .classax {
-    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
     font-size:14px;
     text-decoration:none solid #207bf4;
     color: #207bf4;
 }
 
 .classa {
-    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
     font-size:14px;
     text-decoration:none solid rgb(59, 89, 152);
     color: rgb(59, 89, 152);
@@ -37,7 +50,6 @@ tr:nth-child(odd) { background:  #fbfbfb;}
 }
 
 .classaa {
-    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
     font-size:14px;
     text-decoration:none solid rgb(59, 89, 152);
     color: rgb(59, 89, 152);
@@ -69,21 +81,21 @@ tr:nth-child(odd) { background:  #fbfbfb;}
 
 .like {
     background-image: url(like.png);
-    height: 30px; 
-    width: 30px; 
+    height: 30px;
+    width: 30px;
     border: 0px;
 }
 .like:hover {
     background-image: url(like_selected.png);
-    height: 30px; 
-    width: 30px; 
+    height: 30px;
+    width: 30px;
     border: 0px;
 }
 
 .like .selected {
     background-image: url(like_selected.png);
-    height: 30px; 
-    width: 30px; 
+    height: 30px;
+    width: 30px;
     border: 0px;
 }
 
@@ -125,7 +137,7 @@ tr:nth-child(odd) { background:  #fbfbfb;}
    display: none;
    position: fixed;
    width: 380px;
-   
+
    top: 50%;
    left: 50%;
    margin-left: -190px;
@@ -136,10 +148,10 @@ tr:nth-child(odd) { background:  #fbfbfb;}
    z-index: 102;
    font-family: Verdana;
    font-size: 10pt;
-   
-   
-   
-   
+
+
+
+
 }
 .web_dialog_title
 {
@@ -158,3 +170,4 @@ tr:nth-child(odd) { background:  #fbfbfb;}
 {
    text-align: right;
 }
+h1 { display:inline-block;}
