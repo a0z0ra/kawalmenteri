@@ -64,10 +64,9 @@
                 $('#content').html("Sedang Mengecek Facebook Session...");
                 FB.init({
                     appId: '1519572904939148',
-                    cookie: true, // enable cookies to allow the server to access
-                    // the session
-                    xfbml: true, // parse social plugins on this page
-                    version: 'v2.0' // use version 2.0
+                    cookie: true, 
+                    xfbml: true, 
+                    version: 'v2.0'
                 });
 
                 FB.getLoginStatus(function(response) {
@@ -282,7 +281,7 @@
                 var thead = $("<thead>").appendTo(tblb);
                 var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
                 var tblhtr = $("<tr>").appendTo(thead);
-                $("<th>").text("No.").appendTo(tblhtr).click(function() {
+                $("<th>").text("No.").width("25px").appendTo(tblhtr).click(function() {
                     sort(0);
                 });
                 $("<th>").text("Posisi").appendTo(tblhtr).click(function() {
@@ -293,7 +292,7 @@
                 $.each(dataPosisi, function(k, c) {
                     i++;
                     tblhtr = $("<tr>").appendTo(tbody);
-                    $("<td>").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
+                    $("<td>").width("25px").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
                     var a = $("<a>").css("color", "rgb(109, 132, 180)").attr("href", "#0." + (i - 1)).text(c);
                     $("<td>").attr("data-sort-index", "1").attr("data-sort", c).append(a).appendTo(tblhtr);
                 })
@@ -364,7 +363,7 @@
                     var tfoot = thead;//$("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
                     var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
                     var tblhtr = $("<tr>").appendTo(thead);
-                    var th0 = $("<th>").text("No.").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    var th0 = $("<th>").width("25px").text("No.").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
                     $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th0).click(function() {
                         sort(0);
                     });
@@ -386,7 +385,7 @@
                         if (type == "read") {
                             tblhtr = $("<tr>").css("vertical-align", "top").appendTo(tbody);
                             //line-height: 15.359999656677246px
-                            $("<td>").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
+                            $("<td>").width("25px").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
                             var divx = $("<div>").html("");
                             var tddet = $("<td>").width(500).appendTo(tblhtr).attr("data-sort-index", "1").attr("data-sort", data.posisi).append($("<b>").css("font-size", "16px").text(data.posisi)).append($("<br>")).append(divx);
                             var td = $("<td>").width(300).appendTo(tblhtr);
@@ -581,7 +580,7 @@
                     var tfoot = thead;//$("<tfoot>").appendTo(tblb).css("background-color","#CFE0F1");
                     var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
                     var tblhtr = $("<tr>").appendTo(thead);
-                    var th0 = $("<th>").text("No.").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    var th0 = $("<th>").width("25px").text("No.").appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
                     $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th0).click(function() {
                         sort(0);
                     });
@@ -604,7 +603,7 @@
                         var a;
                         if (type == "read") {
                             tblhtr = $("<tr>").appendTo(tbody);
-                            $("<td>").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
+                            $("<td>").width("25px").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
                             var tdx = $("<td>").width("620px").appendTo(tblhtr);
                             var divx = $("<div>").html("");
                             tdx.append($("<span>").html("<b>Nama</b>: " + data.kandidat));
@@ -891,7 +890,7 @@
                             divx0.append($("<br>"));
                             var divx = $("<div>").html(data.detail).appendTo(divx0);
                             $(divx.children("iframe")[0]).attr("frameBorder", 0);
-                            $(divx.children("iframe")[0]).attr("width", 700);
+                            $(divx.children("iframe")[0]).attr("width", 800);
                             $(divx.children("iframe")[0]).attr("height", 500);
                             $(divx.children("iframe")[0]).attr("marginheight", 0);
                             $(divx.children("iframe")[0]).attr("marginwidth", 0);
@@ -900,34 +899,6 @@
                             $(divx.children("iframe")[0]).attr("scrolling", "yes");
                             var src = ($(divx.children("iframe")[0]).attr("src")).replace("/preview", "");
                             sumber.append($("<a>").attr("class", "classa").css("font-size", "14px").attr("href", src).attr("target", data.nama).text(src));
-
-
-                            //var src=$(divx.children("iframe")[0]).attr("src");
-                            //$(divx.children("iframe")[0]).attr("src","");
-                            //divx.html("");
-                            //var data=$(divx.children("iframe")[0]).contents();
-                            //divx.css("height","500px").css("overflow","auto").html(data);
-                            return false;
-                            $(divx.children("iframe")[0]).load(function() {
-                                //console.log($(divx.children("iframe")[0]).contents().find('html').html())
-                            });
-                            $.ajax({
-                                url: "/action?form_action=getiframeData&session=" + Math.random()
-                                , type: "POST"
-                                , data: JSON.stringify({src: src})
-                                , dataType: 'json'
-                                , mimeType: "application/json"
-                                , contentType: "application/json"
-                                , cache: false
-                                , success: function(result) {
-                                    divx.css("height", "500px").css("overflow", "auto").html(result.data);
-                                }
-                                , error: function() {
-                                }
-                                , complete: function() {
-                                }
-                            });
-
 
                         } else {
                             var divx = $("<div>").html(data.detail).appendTo(divx0);

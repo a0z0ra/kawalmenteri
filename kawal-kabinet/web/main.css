@@ -12,8 +12,11 @@ body {    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial
 .right {float:right;}
 .left {float:left;}
 
+
 #content {width:85%;}
+/*
 #content table {width:100%;}
+*/
 table {
     border:1px solid white;
     font-size:14px;
