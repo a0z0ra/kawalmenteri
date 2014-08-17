@@ -621,8 +621,8 @@
                             $("<td>").width("25px").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
                             var tdx = $("<td>").width("620px").appendTo(tblhtr);
                             var divx = $("<div>").html("");
-                            tdx.append($("<span>").html("<b>Nama</b>: " + data.kandidat));
-                            tdx.append($("<br>")).append($("<span>").html("<b>Deskripsi Umum</b>:&nbsp;" + data.desc));
+                            tdx.append($("<h3>").html(data.kandidat));
+                            tdx.append($("<br>")).append($("<span>").html(data.desc));
                             tdx.append($("<br>")).append(divx);
                             var div1 = $("<div>").appendTo($("<td>").appendTo(tblhtr));
                             getMyComment(div1, input_, replaceSpecial(data.kandidat), data, divx, tdx);
