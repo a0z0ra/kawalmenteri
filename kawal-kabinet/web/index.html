@@ -16,7 +16,6 @@
         <script src="social-likes/social-likes.min.js"></script>
         <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
         <script src="prettySocial-master/jquery.prettySocial.min.js"></script>
-        <script src="main.js"></script>
         <script>
             var like_img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAERElEQVRoQ+2ZX2hbVRjAz3eTxsUKFUQK7mF9qnsQ2UtF2NA8DNnDHpLO29tkXRrmKLqXgQx804Ig+uCDTNkYyPKnyc3trQ2kSHxwGFkR66xYFPZHUIpuWR3r2q1pmpuc8/nFPzXamtwkd9u94HnNd7/z/fL9O+c7wCxcgUDgMY+357TE2LPIhJeh6wsU/EyptDKbzWbvWrjVFlVgpfLh4YgPXOyzep2IrATAJgGNN1Kp1KKV+9XrshREUSIDkpt9tZ2xyJjGjWJY13XjXsBYChIIKP07HvZe2dZQxCpHPDapxmO2B/H7h/u83Tt++m9DYWll2ejP5ZJ3rIax1CPB4LFeJlVvNDKSioCcTsanbA3i90ce9Xaz242MFALf1dTYSVuDyLL8iNvT3bDMosBMcW15ZGZmZt1KGEtDa/9+uefx3u6VxqGF58vrqGQy8Vu2BZFD4WfcIM01BmEXQJRlVVWXbAni8/ncvTv73qOufrwhCOIsNccXbQsyNDS6V3LDJHXxJ5qAnC+XbBxaSmh0SgI41CxckOHHq8vVkNW9xJJkHwpG/C5AnQG4m4Igi+7u73tpfHxcNJNt5feOQQZDoV0Pgedz2nSXmY3pEPlmOhV93YxsKzIdgYyNjXXdWSu/AwAnaFPKcxML8TuG2OAYs1UHAkPydgGESBcKP8/l8/mNf0t1BKIohwfA3ZUhJTtNIHQsgoh0asD306n4Fo92BhIanaUE39uxhS0qAGSHUqnodP1n7YKAEgyPSZJ0pkUbrBLPX73seWF+/mzlL4UgB8P7zGi/WSh9m8/razVZWR550uVxTQGDp8x8a7kMsh+KYsOXTaevb4IED0fo8tZ8GZwPfJROfF2THAoeecsluV4zneDN1bcqcaVqMJ+uRzevDNAOyHBodIEq1dOt7m6VPCX92XQq9grp2+xF7YJcIpDdVhnWkh5kl1duL+3J5XLlfyR7mx55QCB4iwk+oqoTn2zpI84CYRWGYqFaKflpGnPNwR75w3QU7MKqVDmYS/49xHBejtRAkK1ygWE9Hct2VH6paj2gHPnTI1S2AOGEqkZPORqEfFKkwntUVWOTjgaho/D33OAHdD2+mfBOyxFBUbVocFCmtehFx1YtoviQcX5K0yYWHN1HBMJxLXXu9HYnAUeFFoXVRRdUB5PJ5C+O9gj1j5vI4YCmnfvG0SB0c/9RcH5Q0xKXHA1CA/CJLrd4OZFIFB0LQmH1q7FR3TM9PVFwZrLT+IjKbr6Extv1V1vHeYQq1au8sv5Bs0dU+5dfxPm1u8vPNXsYsj0IeeQqr8Dz9YMGR+YIzWHnkslobQjIG93t7e0RegLmKI6aeZu3NQi9pWRuXFsMbTe0tqpq1U6f92QcRGMmmlVhke6AnwKW6RZo7q2xLY8ooSODDKWeluZRZoWBcfLEdayUvqSS+/uI1sxqC8SM4vst8z/I/f7Hm+33GyWq5FHE5EADAAAAAElFTkSuQmCC";
             var like_selected_img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAEM0lEQVRoQ+2ZT2wUZRTA39v5s5Qtss222wQP6EH0YAwXjEmN9mQ4cCAgkhDCAY0KB5sQDXa3lqltt2riwaABTUw08aClEWNi4kEjhsZYEbDBBNBE0wTBnf1DYZnuzr/v+UqkqbTszO4OMJM4x90373u/eX++970PIcBnVe5qagW2HYoRPUaIbUDwA5F7mK5UJotvdVUCXGqJKgxSeeew3SvJ8N1NOqtENG4J98DsQNtMkOst1hUoSOp1Y4OsqD8tayzRZ3lL2QUaWrcDJlCQzgO1ddIK6fxyhhKBQ0DPFTLqx6EHSY5V74uD/OetDCXCvG5J69grV4OGCdQjiVHqbo85f9czUhBuK2TkiVCDJDVKxuPO5XpGcni9rferL4caBDS9vTveUbfMEsBR3SzsBG3NXJAwgYZWx/7yajW5arauRwi+rUJ1eyVzTym0IKkR61FZwikPkONA8jY9i/lwgmgkpxX7HYzhXo8cmTSE8rQRVpCOnN2jIIxzrK6p7xHi0KqFN7TSo/YExmCrj3D5yjblHeWA95JAkj2VczZLQEcQQfYCIcCPdFN6ljdF4SXbyP8tgyRHqmvVmPQ9Iq71szCX32G9Xxn0I9uITGsg75OSLttvAmAfK4r5WZg3xDNAdMs2ZlkdyAcCgZcE4qdF68IUaPfXbpZrCWS+25Xk+FFEutcPRMsyBJe5+XxXzy71aEsg6Zw9yXnR07KBDSrg5nOrnpE/D+A8QpjOmc8jSocbtCEQcUFwrJCSn4IX0L6hELtGqo/70V5wKr+Alr42L9s5XHtQkqQJQHjYz7tBy3DB+F3U5N7iEF5cAOkes/l378etWRuKQ4mf5yW7Ru0c7xn7/Sa4t/bGJLhgnDdMq9fQ2heODNgMSHrMnmaIRxpbPjhpBvlAN5U9i/eipkC6c9ZZQHwoONMa0UTn8omZ9fDSA+Z/kr0Zj9w1EIKSjbCz3K98vWQfiRIIJ7PNo6VpIZzNpYGVf0XXI/9azjDHHUvZtLjxjGCOAPcrcIWHGLuKGfnLlsrvXcuRGx5hFhLUV8iqB6MOYpAQuwvZ+Hi0QQh+dYW8sTSACwkfqRzh3BAcVDOuA9tLg+qJyFYtQfSh7cDB2UF1Otr7CNJe/VX10HJ9QKRCi8PqhG05W8raygvR9ghAQQjaWMyqp6INQvSH69Km0mvxs9EGEfSJriovwitoRBaEhw76NbLWz2UTlyKZ7Lx3nEGiYxXTfmNuKLFwtI2cR1xB+4q28p7XJWoEyi+dzJvFJ7wuhkIPwqH1m2GaTy4eNEQzR4im9NNf9MCRZ9x6J/tQe4QrFc/iaLefu/lwgwDyxam0gxN9ydA6kKp1fa5FcLvGQYInmAZ3ut8gKX1+7xqb8gjPfbfwhc3qRqZRfmX5A7luDC/GTPnHgobXR7R+nqZA/Ci+0zL/g9zpL+613j+I59dR99Im/AAAAABJRU5ErkJggg==";
@@ -276,26 +275,12 @@
                 $('#content').html("");
                 $('#navTop').html("");
                 $('#navBottom').html("");
-                /*
-                var tblb = $("<table>").width("100%").appendTo($('#content'));
-                var thead = $("<thead>").appendTo(tblb);
-                var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
-                var tblhtr = $("<tr>").appendTo(thead);
-                $("<th>").text("No.").width("25px").appendTo(tblhtr).click(function() {
-                    sort(0, tbody);
-                });
-                $("<th>").text("Posisi").appendTo(tblhtr).click(function() {
-                    sort(1, tbody);
-                });*/
                 var i = 0;
 
                 $.each(dataPosisi, function(k, c) {
                     i++;
-                    //tblhtr = $("<tr>").appendTo(tbody);
-                    //$("<td>").width("25px").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
                     var a = $("<a>").attr("href", "#0." + (i - 1)).text(c).addClass("mainLinks");
                     a.appendTo($('#mainNav'));
-                    //$("<td>").attr("data-sort-index", "1").attr("data-sort", c).append(a).appendTo(tblhtr);
                 })
                 $("a.mainLinks[href='#0.0']").addClass("active");
             }
