@@ -1,19 +1,22 @@
-body {    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif; font-size:14px; letter-spacing:1px; }
-#headerdiv {width:100%; margin-top:35px;}
-#title {margin-left:20px;}
-#title, #navlinks, #selamatdatang  { display:inline-block;}
-#selamatdatang {position:absolute;padding:10px;top:0;right:0;background-color:#EFEFEF;}
+body {font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif; font-size:14px; margin:0px;padding:0px;}
+#headerdiv {width:100%;white-space:nowrap;margin:0px;padding:0px;background-color:black;}
+#title {margin:0px;padding:0px;margin-left: 10px;}
+#title, #navlinks, #selamatdatang, #acctName  {display:inline-block;color:white;margin-top: 7px;}
+#selamatdatang {position:absolute;right:10px;}
+
+
+
 #navlinks  { margin:0px; padding:0px; }
-#navlinks li { display:inline-block; border-left:1px solid; padding:0 5px;}
+#navlinks li { display:inline-block; border-left:1px solid rgb(59, 89, 152); padding:5px;}
 #navlinks li:first-child {border:0px;}
-#kawaldetailtr {padding:20px 20px 30px; margin:0 20px 20px; background-color:#EFEFEF;display:none; line-height:15pt; }
+#kawaldetailtr {padding:20px 20px 30px; margin:0px; background-color:#EFEFEF;display:none; line-height:15pt; }
 #twitterwidget, #countdown {margin:20px;}
 .external-link {background:url('external-link-ltr-icon.png') no-repeat right top; padding-right:12px;}
 .right {float:right;}
 .left {float:left;}
 
 
-#content {width:85%;}
+#content {width:100%;}
 /*
 #content table {width:100%;}
 */
@@ -60,6 +63,18 @@ tr:nth-child(odd) { background:  #fbfbfb;}
 .classaa:hover {
     text-decoration: underline;
 }
+
+
+.classaw {
+    font-size:14px;
+    font-weight: bold;
+    text-decoration:none solid rgb(59, 89, 152);
+    color: white;
+}
+.classaw:hover {
+    text-decoration: underline;
+}
+
 
 .social-container {
     margin:0px;
@@ -174,3 +189,15 @@ tr:nth-child(odd) { background:  #fbfbfb;}
    text-align: right;
 }
 h1 { display:inline-block;}
+
+
+#tableContainer-1 {
+    height: 100%;
+    width: 100%;
+    display: table;
+  }
+#tableContainer-2 {
+    vertical-align: middle;
+    display: table-cell;
+    height: 100%;
+  }

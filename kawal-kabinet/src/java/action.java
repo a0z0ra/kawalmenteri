@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Index.Property;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -17,6 +18,9 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.repackaged.com.google.api.client.util.DateTime;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -73,6 +77,7 @@ public class action extends HttpServlet {
                 Object obj = JSONValue.parse(sb.toString());
                 JSONObject obj1 = (JSONObject) obj;
                 String admin = "N";
+                String icw = "N";
                 String email = obj1.get("email").toString();
                 String first_name = obj1.get("first_name").toString();
                 String gender = obj1.get("gender").toString();
@@ -110,13 +115,21 @@ public class action extends HttpServlet {
                             || id.equalsIgnoreCase("10152397276159760")
                             || name.equalsIgnoreCase("Khairul Anshar")) {
                         userTable.setProperty("admin", "Y");
+                        userTable.setProperty("icw", "Y");
                     } else {
                         userTable.setProperty("admin", admin);
+                        userTable.setProperty("icw", "N");
                     }
                     datastore.put(userTable);
                 } else {
                     for (Entity userTable : userTables) {
                         admin = userTable.getProperty("admin").toString();
+                        try {
+                            icw = userTable.getProperty("icw").toString();
+                        } catch (Exception e) {
+                            userTable.setProperty("icw", "N");
+                            icw = "N";
+                        }
                         userTable.setProperty("lastLogin", date);
                         datastore.put(userTable);
                     }
@@ -126,16 +139,19 @@ public class action extends HttpServlet {
                         || id.equalsIgnoreCase("10152397276159760")
                         || name.equalsIgnoreCase("Khairul Anshar")) {
                     admin = "Y";
+                    icw = "Y";
                 }
                 obj1.put("admin", admin);
+                obj1.put("icw", icw);
                 session.setAttribute("userAccount", obj1);
                 record.put("userAccount", obj1);
-
             } catch (Exception e) {
             }
+
             response.setContentType("text/html;charset=UTF-8");
             out.print(JSONValue.toJSONString(record));
             out.flush();
+
         }
         if (form_action.equalsIgnoreCase("getiframeData")) {
             StringBuffer sb = new StringBuffer();
@@ -195,7 +211,7 @@ public class action extends HttpServlet {
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
                 postData(name, dept, "", star, comment, id, "AlasanStarPosisi", dept, link, link);
-                postData(name, dept, "", star, comment, id, "AlasanStarCalonPosisi", "dept", dept, link);
+                postData2(name, dept, "", star, comment, id, "AlasanStarCalonPosisi", "dept", dept, link);
 
                 record.put("status", "OK");
             } catch (Exception e) {
@@ -364,7 +380,8 @@ public class action extends HttpServlet {
                     PreparedQuery pq = datastore.prepare(query);
                     for (Entity AlasanStar : pq.asIterable()) {
                         String id = AlasanStar.getProperty("user").toString();
-                        String date = AlasanStar.getProperty("date").toString();
+                        Date time = (Date) AlasanStar.getProperty("date");
+                        String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
                         String star = AlasanStar.getProperty("star").toString();
                         String comment = AlasanStar.getProperty("comment").toString();
                         String name = AlasanStar.getProperty("name").toString();
@@ -400,7 +417,9 @@ public class action extends HttpServlet {
                 for (Entity AlasanStar : pq.asIterable()) {
                     record1 = new LinkedHashMap();
                     String id = AlasanStar.getProperty("user").toString();
-                    String date = AlasanStar.getProperty("date").toString();
+                    //DateTime dateTime = AlasanStar.getProperties().getDateTimeValue();
+                    Date time = (Date) AlasanStar.getProperty("date");
+                    String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
                     String star = AlasanStar.getProperty("star").toString();
                     String comment = AlasanStar.getProperty("comment").toString();
                     comment = comment.replaceAll("\n", "<br/>");
@@ -470,7 +489,7 @@ public class action extends HttpServlet {
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
                 postData(name, dept, namaCalon, star, comment, id, "AlasanStar", dept + namaCalon, link, link);
-                postData(name, dept, namaCalon, star, comment, id, "AlasanStarCalon", dept, namaCalon, link);
+                postData2(name, dept, namaCalon, star, comment, id, "AlasanStarCalon", dept, namaCalon, link);
 
                 record.put("status", "OK");
             } catch (Exception e) {
@@ -495,43 +514,51 @@ public class action extends HttpServlet {
                 Object obj = JSONValue.parse(sb.toString());
                 //JSONArray records = (JSONArray) obj;
                 JSONObject obj1 = (JSONObject) obj;
-                JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                String id_ = userAccount.get("id").toString();
-                String link_ = userAccount.get("link").toString();
                 dept = obj1.get("dept").toString();
                 namaCalon = obj1.get("namaCalon").toString();
-                DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-                Key guestbookKey = KeyFactory.createKey(dept + namaCalon, link_);
-                // Run an ancestor query to ensure we see the most up-to-date
-                // view of the Greetings belonging to the selected Guestbook.
-                Query query = new Query("AlasanStar", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
-                //List<Entity> AlasanStars = datastore.prepare(query);
-                PreparedQuery pq = datastore.prepare(query);
                 LinkedHashMap record1 = new LinkedHashMap();
-                for (Entity AlasanStar : pq.asIterable()) {
-                    String id = AlasanStar.getProperty("user").toString();
-                    String date = AlasanStar.getProperty("date").toString();
-                    String star = AlasanStar.getProperty("star").toString();
-                    String comment = AlasanStar.getProperty("comment").toString();
-                    String name = AlasanStar.getProperty("name").toString();
-                    String link = AlasanStar.getProperty("link").toString();
-                    String id__ = AlasanStar.getKey().toString();
-                    record1.put("id_", id__);
-                    record1.put("id", id);
-                    record1.put("date", date);
-                    record1.put("star", star);
-                    record1.put("comment", comment);
-                    record1.put("name", name);
-                    record1.put("link", link);
+                DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+                try {
+                    JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
+                    String id_ = userAccount.get("id").toString();
+                    String link_ = userAccount.get("link").toString();
+
+                    Key guestbookKey = KeyFactory.createKey(dept + namaCalon, link_);
+                    // Run an ancestor query to ensure we see the most up-to-date
+                    // view of the Greetings belonging to the selected Guestbook.
+                    Query query = new Query("AlasanStar", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+                    //List<Entity> AlasanStars = datastore.prepare(query);
+                    PreparedQuery pq = datastore.prepare(query);
+
+                    for (Entity AlasanStar : pq.asIterable()) {
+                        String id = AlasanStar.getProperty("user").toString();
+                        Date time = (Date) AlasanStar.getProperty("date");
+                        String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
+                        String star = AlasanStar.getProperty("star").toString();
+                        String comment = AlasanStar.getProperty("comment").toString();
+                        String name = AlasanStar.getProperty("name").toString();
+                        String link = AlasanStar.getProperty("link").toString();
+                        String id__ = AlasanStar.getKey().toString();
+                        record1.put("id_", id__);
+                        record1.put("id", id);
+                        record1.put("date", date);
+                        record1.put("star", star);
+                        record1.put("comment", comment);
+                        record1.put("name", name);
+                        record1.put("link", link);
+                    }
+                } catch (Exception e) {
+                    record.put("status", "error");
+                    record.put("errormsg", e.toString());
                 }
                 record.put("AlasanStar", record1);
 
-                guestbookKey = KeyFactory.createKey(dept, namaCalon);
+                Key guestbookKey = KeyFactory.createKey(dept, namaCalon);
                 // Run an ancestor query to ensure we see the most up-to-date
                 // view of the Greetings belonging to the selected Guestbook.
-                query = new Query("AlasanStarCalon", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+                Query query = new Query("AlasanStarCalon", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
                 //List<Entity> AlasanStars = datastore.prepare(query);
-                pq = datastore.prepare(query);
+                PreparedQuery pq = datastore.prepare(query);
                 JSONArray obj11 = new JSONArray();
                 JSONArray obj11p = new JSONArray();
                 JSONArray obj11n = new JSONArray();
@@ -544,7 +571,8 @@ public class action extends HttpServlet {
                 for (Entity AlasanStar : pq.asIterable()) {
                     record1 = new LinkedHashMap();
                     String id = AlasanStar.getProperty("user").toString();
-                    String date = AlasanStar.getProperty("date").toString();
+                    Date time = (Date) AlasanStar.getProperty("date");
+                    String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
                     String star = AlasanStar.getProperty("star").toString();
                     String comment = AlasanStar.getProperty("comment").toString();
                     comment = comment.replaceAll("\n", "<br/>");
@@ -787,6 +815,14 @@ public class action extends HttpServlet {
             String line = null;
             LinkedHashMap record = new LinkedHashMap();
             try {
+
+                JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
+                String id = userAccount.get("id").toString();
+                String nama = userAccount.get("name").toString();
+                String email = userAccount.get("email").toString();
+                String link = userAccount.get("link").toString();
+                String admin = userAccount.get("admin").toString();
+
                 BufferedReader reader = request.getReader();
                 while ((line = reader.readLine()) != null) {
                     sb.append(line);
@@ -808,13 +844,20 @@ public class action extends HttpServlet {
                 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
                 PreparedQuery pq = datastore.prepare(query);
                 boolean found = pq.asIterable().iterator().hasNext();
+
+                if (found) {
+                    if (admin.equalsIgnoreCase("Y")) {
+                        for (Entity psosisiEntity : pq.asList(FetchOptions.Builder.withLimit(1))) {
+                            Date date = new Date();
+                            psosisiEntity.setProperty("date", date);
+                            psosisiEntity.setProperty("detail", new Text(detail));
+                            datastore.put(psosisiEntity);
+                        }
+                    }
+                }
+
                 if (!found) {
-                    JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                    String id = userAccount.get("id").toString();
-                    String nama = userAccount.get("name").toString();
-                    String email = userAccount.get("email").toString();
-                    String link = userAccount.get("link").toString();
-                    String admin = userAccount.get("admin").toString();
+
                     Date date = new Date();
                     Entity psosisiEntity = new Entity("posisi", typeKey);
                     psosisiEntity.setProperty("user", id);
@@ -841,12 +884,7 @@ public class action extends HttpServlet {
                 query = new Query("posisi", typeKey).addSort("date", Query.SortDirection.ASCENDING);
                 pq = datastore.prepare(query);
                 JSONArray obj11 = new JSONArray();
-                JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                String id = userAccount.get("id").toString();
-                String nama = userAccount.get("name").toString();
-                String email = userAccount.get("email").toString();
-                String link = userAccount.get("link").toString();
-                String admin = userAccount.get("admin").toString();
+
                 for (Entity typeEntity : pq.asIterable()) {
                     String reviewed = typeEntity.getProperty("reviewed").toString();
                     if (reviewed.equalsIgnoreCase("Y")) {
@@ -936,14 +974,15 @@ public class action extends HttpServlet {
                 String email = "";
                 String link = "";
                 String admin = "";
+                String icw = "";
                 try {
                     JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                    id = userAccount.get("id").toString();
                     id = userAccount.get("id").toString();
                     nama = userAccount.get("name").toString();
                     email = userAccount.get("email").toString();
                     link = userAccount.get("link").toString();
                     admin = userAccount.get("admin").toString();
+                    icw = userAccount.get("icw").toString();
                 } catch (Exception ex1) {
                 }
                 for (Entity typeEntity : pq.asIterable()) {
@@ -957,12 +996,21 @@ public class action extends HttpServlet {
                         String nama1 = typeEntity.getProperty("nama").toString();
                         String link1 = typeEntity.getProperty("link").toString();
                         String date = typeEntity.getProperty("date").toString();
+                        String icwcomment = "";
+                        try {
+                            icwcomment = typeEntity.getProperty("icwcomment").toString();
+                        } catch (Exception e) {
+                            icwcomment = "";
+                        }
+                        record1.put("key", "kandidat" + type0);
+                        record1.put("val", input);
                         record1.put("kandidat", kandidat);
                         record1.put("desc", desc);
                         record1.put("detail", detail);
                         record1.put("nama", nama1);
                         record1.put("link", link1);
                         record1.put("date", date);
+                        record1.put("icwcomment", icwcomment);
                         obj11.add(record1);
                     } else {
                         String user = typeEntity.getProperty("user").toString();
@@ -979,12 +1027,29 @@ public class action extends HttpServlet {
                             String nama1 = typeEntity.getProperty("nama").toString();
                             String link1 = typeEntity.getProperty("link").toString();
                             String date = typeEntity.getProperty("date").toString();
+                            record1.put("key", "kandidat" + type0);
+                            record1.put("val", input);
                             record1.put("kandidat", kandidat);
                             record1.put("desc", desc);
                             record1.put("detail", detail);
                             record1.put("nama", nama1);
                             record1.put("link", link1);
                             record1.put("date", date);
+                            String icwcomment = "";
+
+                            if (email.equalsIgnoreCase("khairul.anshar@gmail.com")
+                                    || id.equalsIgnoreCase("112525777678499279265")
+                                    || id.equalsIgnoreCase("10152397276159760")
+                                    || nama.equalsIgnoreCase("Khairul Anshar")
+                                    || admin.equalsIgnoreCase("Y")
+                                    || icw.equalsIgnoreCase("Y")) {
+                                try {
+                                    icwcomment = typeEntity.getProperty("icwcomment").toString();
+                                } catch (Exception e) {
+                                    icwcomment = "";
+                                }
+                            }
+                            record1.put("icwcomment", icwcomment);
                             obj11.add(record1);
                         }
                     }
@@ -999,11 +1064,70 @@ public class action extends HttpServlet {
             out.print(JSONValue.toJSONString(record));
             out.flush();
         }
+        if (form_action.equalsIgnoreCase("setIcwComment")) {
+            StringBuffer sb = new StringBuffer();
+            String line = null;
+            LinkedHashMap record = new LinkedHashMap();
+            try {
+                JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
+                String icw = userAccount.get("icw").toString();
+                if (icw.equalsIgnoreCase("N")) {
+
+                } else {
+                    BufferedReader reader = request.getReader();
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    Object obj = JSONValue.parse(sb.toString());
+                    //JSONArray records = (JSONArray) obj;
+                    JSONObject obj1 = (JSONObject) obj;
+
+                    String input = obj1.get("input").toString();
+                    String input0 = obj1.get("input0").toString();
+                    String type0 = obj1.get("type0").toString();
+                    String value = obj1.get("value").toString();
+                    String menteri = obj1.get("menteri").toString();
+                    String kandidat = obj1.get("kandidat").toString();
+                    Key typeKey = KeyFactory.createKey("kandidat" + type0, input);
+                    // Run an ancestor query to ensure we see the most up-to-date
+                    // view of the Greetings belonging to the selected Guestbook.
+
+                    Filter namaKandidat = new FilterPredicate("kandidat", FilterOperator.EQUAL, kandidat);
+                    // Run an ancestor query to ensure we see the most up-to-date
+                    // view of the Greetings belonging to the selected Guestbook.
+                    Query query = new Query("kandidat", typeKey).setFilter(namaKandidat);
+                    //Query query = new Query("posisi", typeKey);//.addSort("date", Query.SortDirection.DESCENDING);
+                    //List<Entity> AlasanStars = datastore.prepare(query);
+                    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+                    for (Entity psosisiEntity : datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1))) {
+                        psosisiEntity.setProperty("icwcomment", value);
+                        datastore.put(psosisiEntity);
+                    }
+
+                }
+                record.put("status", "OK");
+            } catch (Exception e) {
+                record.put("status", "error");
+                record.put("errormsg", e.toString());
+            }
+            response.setContentType("text/html;charset=UTF-8");
+            out.print(JSONValue.toJSONString(record));
+            out.flush();
+        }
         if (form_action.equalsIgnoreCase("setSet2")) {
             StringBuffer sb = new StringBuffer();
             String line = null;
             LinkedHashMap record = new LinkedHashMap();
             try {
+                JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
+                String id = userAccount.get("id").toString();
+                String nama = userAccount.get("name").toString();
+                String email = userAccount.get("email").toString();
+                String link = userAccount.get("link").toString();
+                String admin = userAccount.get("admin").toString();
+                String icw = userAccount.get("icw").toString();
+
                 BufferedReader reader = request.getReader();
                 while ((line = reader.readLine()) != null) {
                     sb.append(line);
@@ -1032,13 +1156,20 @@ public class action extends HttpServlet {
                 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
                 PreparedQuery pq = datastore.prepare(query);
                 boolean found = pq.asIterable().iterator().hasNext();
+
+                if (found) {
+                    if (admin.equalsIgnoreCase("Y")) {
+                        for (Entity psosisiEntity : pq.asList(FetchOptions.Builder.withLimit(1))) {
+                            Date date = new Date();
+                            psosisiEntity.setProperty("date", date);
+                            psosisiEntity.setProperty("detail", new Text(value2));
+                            datastore.put(psosisiEntity);
+                        }
+                    }
+                }
+
                 if (!found) {
-                    JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                    String id = userAccount.get("id").toString();
-                    String nama = userAccount.get("name").toString();
-                    String email = userAccount.get("email").toString();
-                    String link = userAccount.get("link").toString();
-                    String admin = userAccount.get("admin").toString();
+
                     Date date = new Date();
                     Entity psosisiEntity = new Entity("kandidat", typeKey);
                     psosisiEntity.setProperty("user", id);
@@ -1050,6 +1181,8 @@ public class action extends HttpServlet {
                     psosisiEntity.setProperty("desc", value1);
                     psosisiEntity.setProperty("posisi", menteri);
                     psosisiEntity.setProperty("detail", new Text(value2));
+                    psosisiEntity.setProperty("icwcomment", "");
+
                     if (email.equalsIgnoreCase("khairul.anshar@gmail.com")
                             || id.equalsIgnoreCase("112525777678499279265")
                             || id.equalsIgnoreCase("10152397276159760")
@@ -1067,8 +1200,7 @@ public class action extends HttpServlet {
                 query = new Query("kandidat", typeKey).addSort("date", Query.SortDirection.ASCENDING);
                 pq = datastore.prepare(query);
                 JSONArray obj11 = new JSONArray();
-                JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                String id = userAccount.get("id").toString();
+
                 for (Entity typeEntity : pq.asIterable()) {
                     String reviewed = typeEntity.getProperty("reviewed").toString();
                     if (reviewed.equalsIgnoreCase("Y")) {
@@ -1077,33 +1209,63 @@ public class action extends HttpServlet {
                         String desc = typeEntity.getProperty("desc").toString();
                         Text detail0 = (Text) typeEntity.getProperty("detail");
                         String detail = detail0.getValue();
-                        String nama = typeEntity.getProperty("nama").toString();
-                        String link = typeEntity.getProperty("link").toString();
+                        String nama1 = typeEntity.getProperty("nama").toString();
+                        String link1 = typeEntity.getProperty("link").toString();
                         String date = typeEntity.getProperty("date").toString();
+                        String icwcomment = "";
+                        try {
+                            icwcomment = typeEntity.getProperty("icwcomment").toString();
+                        } catch (Exception e) {
+                            icwcomment = "";
+                        }
+                        record1.put("key", "kandidat" + type0);
+                        record1.put("val", input);
                         record1.put("kandidat", kandidat);
                         record1.put("desc", desc);
                         record1.put("detail", detail);
-                        record1.put("nama", nama);
-                        record1.put("link", link);
+                        record1.put("nama", nama1);
+                        record1.put("link", link1);
                         record1.put("date", date);
+                        record1.put("icwcomment", icwcomment);
                         obj11.add(record1);
                     } else {
                         String user = typeEntity.getProperty("user").toString();
-                        if (user.equalsIgnoreCase(id)) {
+                        if (user.equalsIgnoreCase(id) || (email.equalsIgnoreCase("khairul.anshar@gmail.com")
+                                || id.equalsIgnoreCase("112525777678499279265")
+                                || id.equalsIgnoreCase("10152397276159760")
+                                || nama.equalsIgnoreCase("Khairul Anshar")
+                                || admin.equalsIgnoreCase("Y"))) {
                             LinkedHashMap record1 = new LinkedHashMap();
                             String kandidat = typeEntity.getProperty("kandidat").toString();
                             String desc = typeEntity.getProperty("desc").toString();
                             Text detail0 = (Text) typeEntity.getProperty("detail");
                             String detail = detail0.getValue();
-                            String nama = typeEntity.getProperty("nama").toString();
-                            String link = typeEntity.getProperty("link").toString();
+                            String nama1 = typeEntity.getProperty("nama").toString();
+                            String link1 = typeEntity.getProperty("link").toString();
                             String date = typeEntity.getProperty("date").toString();
+                            record1.put("key", "kandidat" + type0);
+                            record1.put("val", input);
                             record1.put("kandidat", kandidat);
                             record1.put("desc", desc);
                             record1.put("detail", detail);
-                            record1.put("nama", nama);
-                            record1.put("link", link);
+                            record1.put("nama", nama1);
+                            record1.put("link", link1);
                             record1.put("date", date);
+                            String icwcomment = "";
+
+                            if (email.equalsIgnoreCase("khairul.anshar@gmail.com")
+                                    || id.equalsIgnoreCase("112525777678499279265")
+                                    || id.equalsIgnoreCase("10152397276159760")
+                                    || nama.equalsIgnoreCase("Khairul Anshar")
+                                    || admin.equalsIgnoreCase("Y")
+                                    || icw.equalsIgnoreCase("Y")) {
+                                try {
+                                    icwcomment = typeEntity.getProperty("icwcomment").toString();
+                                } catch (Exception e) {
+                                    icwcomment = "";
+                                }
+                            }
+                            record1.put("icwcomment", icwcomment);
                             obj11.add(record1);
                         }
                     }
@@ -1190,18 +1352,23 @@ public class action extends HttpServlet {
     private void postData2(String name, String dept, String namaCalon, String star, String comment, String id, String table, String key, String keyVal, String link) {
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Key guestbookKey = KeyFactory.createKey(key, keyVal);
-        Date date = new Date();
-        Entity AlasanStar = new Entity(table, guestbookKey);
-        AlasanStar.setProperty("user", id);
-        AlasanStar.setProperty("date", date);
-        AlasanStar.setProperty("dept", dept);
-        AlasanStar.setProperty("star", star);
-        AlasanStar.setProperty("comment", comment);
-        AlasanStar.setProperty("name", name);
-        AlasanStar.setProperty("namaCalon", namaCalon);
-        AlasanStar.setProperty("link", link);
-        datastore.put(AlasanStar);
+        Filter linkFilter = new FilterPredicate("link", FilterOperator.EQUAL, link);
+        Key AlasanStarCalonKey = KeyFactory.createKey(key, keyVal);
+        Query query = new Query(table, AlasanStarCalonKey).setFilter(linkFilter);
+        List<Entity> AlasanStars = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1));
+        if (AlasanStars.isEmpty()) {
+            Date date = new Date();
+            Entity AlasanStar = new Entity(table, AlasanStarCalonKey);
+            AlasanStar.setProperty("user", id);
+            AlasanStar.setProperty("date", date);
+            AlasanStar.setProperty("dept", dept);
+            AlasanStar.setProperty("star", star);
+            AlasanStar.setProperty("comment", comment);
+            AlasanStar.setProperty("name", name);
+            AlasanStar.setProperty("namaCalon", namaCalon);
+            AlasanStar.setProperty("link", link);
+            datastore.put(AlasanStar);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
