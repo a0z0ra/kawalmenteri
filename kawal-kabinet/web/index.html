@@ -10,12 +10,13 @@
         <script src="JSON/json_parse_state.js"></script>
         <script src="JSON/cycle.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script type="text/javascript" src="jQuery-TE_v.1.4.0/jquery-te-1.4.0.min.js" charset="utf-8"></script>
-        <link type="text/css" rel="stylesheet" href="jQuery-TE_v.1.4.0/jquery-te-1.4.0.css">
         <link rel="stylesheet" href="social-likes/social-likes_birman.css">
         <script src="social-likes/social-likes.min.js"></script>
         <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
         <script src="prettySocial-master/jquery.prettySocial.min.js"></script>
+        <link rel="stylesheet" href="tinyeditor/tinyeditor.css">
+        <link rel="stylesheet" href="custom.css">
+        <script src="tinyeditor/tiny.editor.packed.js"></script>
         <script>
             var like_img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAERElEQVRoQ+2ZX2hbVRjAz3eTxsUKFUQK7mF9qnsQ2UtF2NA8DNnDHpLO29tkXRrmKLqXgQx804Ig+uCDTNkYyPKnyc3trQ2kSHxwGFkR66xYFPZHUIpuWR3r2q1pmpuc8/nFPzXamtwkd9u94HnNd7/z/fL9O+c7wCxcgUDgMY+357TE2LPIhJeh6wsU/EyptDKbzWbvWrjVFlVgpfLh4YgPXOyzep2IrATAJgGNN1Kp1KKV+9XrshREUSIDkpt9tZ2xyJjGjWJY13XjXsBYChIIKP07HvZe2dZQxCpHPDapxmO2B/H7h/u83Tt++m9DYWll2ejP5ZJ3rIax1CPB4LFeJlVvNDKSioCcTsanbA3i90ce9Xaz242MFALf1dTYSVuDyLL8iNvT3bDMosBMcW15ZGZmZt1KGEtDa/9+uefx3u6VxqGF58vrqGQy8Vu2BZFD4WfcIM01BmEXQJRlVVWXbAni8/ncvTv73qOufrwhCOIsNccXbQsyNDS6V3LDJHXxJ5qAnC+XbBxaSmh0SgI41CxckOHHq8vVkNW9xJJkHwpG/C5AnQG4m4Igi+7u73tpfHxcNJNt5feOQQZDoV0Pgedz2nSXmY3pEPlmOhV93YxsKzIdgYyNjXXdWSu/AwAnaFPKcxML8TuG2OAYs1UHAkPydgGESBcKP8/l8/mNf0t1BKIohwfA3ZUhJTtNIHQsgoh0asD306n4Fo92BhIanaUE39uxhS0qAGSHUqnodP1n7YKAEgyPSZJ0pkUbrBLPX73seWF+/mzlL4UgB8P7zGi/WSh9m8/razVZWR550uVxTQGDp8x8a7kMsh+KYsOXTaevb4IED0fo8tZ8GZwPfJROfF2THAoeecsluV4zneDN1bcqcaVqMJ+uRzevDNAOyHBodIEq1dOt7m6VPCX92XQq9grp2+xF7YJcIpDdVhnWkh5kl1duL+3J5XLlfyR7mx55QCB4iwk+oqoTn2zpI84CYRWGYqFaKflpGnPNwR75w3QU7MKqVDmYS/49xHBejtRAkK1ygWE9Hct2VH6paj2gHPnTI1S2AOGEqkZPORqEfFKkwntUVWOTjgaho/D33OAHdD2+mfBOyxFBUbVocFCmtehFx1YtoviQcX5K0yYWHN1HBMJxLXXu9HYnAUeFFoXVRRdUB5PJ5C+O9gj1j5vI4YCmnfvG0SB0c/9RcH5Q0xKXHA1CA/CJLrd4OZFIFB0LQmH1q7FR3TM9PVFwZrLT+IjKbr6Extv1V1vHeYQq1au8sv5Bs0dU+5dfxPm1u8vPNXsYsj0IeeQqr8Dz9YMGR+YIzWHnkslobQjIG93t7e0RegLmKI6aeZu3NQi9pWRuXFsMbTe0tqpq1U6f92QcRGMmmlVhke6AnwKW6RZo7q2xLY8ooSODDKWeluZRZoWBcfLEdayUvqSS+/uI1sxqC8SM4vst8z/I/f7Hm+33GyWq5FHE5EADAAAAAElFTkSuQmCC";
             var like_selected_img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAEM0lEQVRoQ+2ZT2wUZRTA39v5s5Qtss222wQP6EH0YAwXjEmN9mQ4cCAgkhDCAY0KB5sQDXa3lqltt2riwaABTUw08aClEWNi4kEjhsZYEbDBBNBE0wTBnf1DYZnuzr/v+UqkqbTszO4OMJM4x90373u/eX++970PIcBnVe5qagW2HYoRPUaIbUDwA5F7mK5UJotvdVUCXGqJKgxSeeew3SvJ8N1NOqtENG4J98DsQNtMkOst1hUoSOp1Y4OsqD8tayzRZ3lL2QUaWrcDJlCQzgO1ddIK6fxyhhKBQ0DPFTLqx6EHSY5V74uD/OetDCXCvG5J69grV4OGCdQjiVHqbo85f9czUhBuK2TkiVCDJDVKxuPO5XpGcni9rferL4caBDS9vTveUbfMEsBR3SzsBG3NXJAwgYZWx/7yajW5arauRwi+rUJ1eyVzTym0IKkR61FZwikPkONA8jY9i/lwgmgkpxX7HYzhXo8cmTSE8rQRVpCOnN2jIIxzrK6p7xHi0KqFN7TSo/YExmCrj3D5yjblHeWA95JAkj2VczZLQEcQQfYCIcCPdFN6ljdF4SXbyP8tgyRHqmvVmPQ9Iq71szCX32G9Xxn0I9uITGsg75OSLttvAmAfK4r5WZg3xDNAdMs2ZlkdyAcCgZcE4qdF68IUaPfXbpZrCWS+25Xk+FFEutcPRMsyBJe5+XxXzy71aEsg6Zw9yXnR07KBDSrg5nOrnpE/D+A8QpjOmc8jSocbtCEQcUFwrJCSn4IX0L6hELtGqo/70V5wKr+Alr42L9s5XHtQkqQJQHjYz7tBy3DB+F3U5N7iEF5cAOkes/l378etWRuKQ4mf5yW7Ru0c7xn7/Sa4t/bGJLhgnDdMq9fQ2heODNgMSHrMnmaIRxpbPjhpBvlAN5U9i/eipkC6c9ZZQHwoONMa0UTn8omZ9fDSA+Z/kr0Zj9w1EIKSjbCz3K98vWQfiRIIJ7PNo6VpIZzNpYGVf0XXI/9azjDHHUvZtLjxjGCOAPcrcIWHGLuKGfnLlsrvXcuRGx5hFhLUV8iqB6MOYpAQuwvZ+Hi0QQh+dYW8sTSACwkfqRzh3BAcVDOuA9tLg+qJyFYtQfSh7cDB2UF1Otr7CNJe/VX10HJ9QKRCi8PqhG05W8raygvR9ghAQQjaWMyqp6INQvSH69Km0mvxs9EGEfSJriovwitoRBaEhw76NbLWz2UTlyKZ7Lx3nEGiYxXTfmNuKLFwtI2cR1xB+4q28p7XJWoEyi+dzJvFJ7wuhkIPwqH1m2GaTy4eNEQzR4im9NNf9MCRZ9x6J/tQe4QrFc/iaLefu/lwgwDyxam0gxN9ydA6kKp1fa5FcLvGQYInmAZ3ut8gKX1+7xqb8gjPfbfwhc3qRqZRfmX5A7luDC/GTPnHgobXR7R+nqZA/Ci+0zL/g9zpL+613j+I59dR99Im/AAAAABJRU5ErkJggg==";
@@ -422,10 +423,35 @@
                                     $(this).html("Batalkan");
                                     tddet.html("");
                                     var input = $("<input>").css("width", "500px").css("font-size", "14px").val(data.posisi);
-                                    var input2x = $('<textarea><b>Alasan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun I: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun II: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun III: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun IV: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun V: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul></textarea>').css("width", "300px");
+                                    var input2x = $('<textarea id="tinyeditor' + i + '"><b>Alasan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun I: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun II: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun III: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun IV: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Target Tahun V: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul></textarea>').css("width", "300px");
                                     tddet.append($("<b>").text("Nama Jabatan (Maksimum 400 Karakter): ")).append($("<br>")).append(input)
                                             .append($("<br>")).append($("<b>").text("Detail (Maksimum 8000 Karakter): ")).append(input2x);
-                                    input2x.jqte();
+
+
+                                    var tinyeditor = new TINY.editor.edit('editor', {
+                                        id: input2x.attr("id"),
+                                        width: "100%",
+                                        height: 500,
+                                        cssclass: 'tinyeditor',
+                                        controlclass: 'tinyeditor-control',
+                                        rowclass: 'tinyeditor-header',
+                                        dividerclass: 'tinyeditor-divider',
+                                        controls: ['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|',
+                                            'orderedlist', 'unorderedlist', '|', 'outdent', 'indent', '|', 'leftalign',
+                                            'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n',
+                                            'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink'],
+                                        footer: true,
+                                        fonts: ['Helvetica', 'Arial', 'lucida grande', 'tahoma', 'verdana', 'arial', 'sans-serif'],
+                                        xhtml: true,
+                                        cssfile: 'custom.css',
+                                        bodyid: 'editor',
+                                        footerclass: 'tinyeditor-footer',
+                                        toggle: {text: 'source', activetext: 'wysiwyg', cssclass: 'toggle'},
+                                        resize: {cssclass: 'resize'}
+                                    });
+
+
+
                                     pdiv.html("");
                                     pdiv.show();
                                     pdiv.append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;"));
@@ -434,11 +460,11 @@
                                                 || input2x.val().length == 0) {
                                             alert("Silahkan Tuliskan Usulan Anda.")
                                         } else {
-                                            parent.hide();
+                                            tinyeditor.post();
                                             $.ajax({
                                                 url: "/action?form_action=setSet1&session=" + Math.random()
                                                 , type: "POST"
-                                                , data: JSON.stringify({input: input_, type: type_, value: input.val().substr(0, 499), value1: input2x.val().substr(0, 8000)})
+                                                , data: JSON.stringify({input: input_, type: type_, value: input.val().substr(0, 499), value1: input2x.val()})
                                                 , dataType: 'json'
                                                 , mimeType: "application/json"
                                                 , contentType: "application/json"
@@ -452,6 +478,7 @@
                                                 , complete: function() {
                                                 }
                                             });
+                                            parent.hide();
                                         }
                                     }));
                                 } else {
@@ -685,11 +712,31 @@
                                     div.html("");
                                     var input = $("<input>").css("width", "250px").css("font-size", "14px");
                                     var input1 = $("<input>").css("width", "500px").css("font-size", "14px");
-                                    var input2 = $('<textarea><img src="http://img.freeflagicons.com/thumb/speech_bubble_icon/indonesia/indonesia_640.png" style="max-width:150px;"><b>Tempat & Tanggal Lahir: </b><span>???</span><br><b>Riwayat Pendidikan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Riwayat Kerja Profesional: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Riwayat Organisasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Keanggotaan/Asosiasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Prestasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Penghargaan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Kekayaan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Indikator Positif: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Indikator Negatif: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul></textarea>').css("width", "500px");
+                                    var input2 = $('<textarea id="tinyeditor' + i + '"><img src="http://img.freeflagicons.com/thumb/speech_bubble_icon/indonesia/indonesia_640.png" style="max-width:150px;"><b>Tempat & Tanggal Lahir: </b><span>???</span><br><b>Riwayat Pendidikan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Riwayat Kerja Profesional: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Riwayat Organisasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Keanggotaan/Asosiasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Prestasi: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Penghargaan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Kekayaan: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Indikator Positif: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul><br><b>Indikator Negatif: </b><ul style="margin: 0px;"><li style="margin: 0px;">???</li></ul></textarea>').css("width", "500px");
                                     div.append($("<span>").html("<b>Nama</b> (Maksimum 400 Karakter):<br>")).append(input).append($("<br>"))
                                             .append($("<span>").html("<b>Deskripsi Umum</b> (Maksimum 400 Karakter):<br>&nbsp;")).append(input1).append($("<br>"))
                                             .append($("<span>").html("<b>Detail</b> (Maksimum 8000 Karakter):")).append(input2);
-                                    input2.jqte();
+                                    var tinyeditor = new TINY.editor.edit('editor', {
+                                        id: input2.attr("id"),
+                                        width: "100%",
+                                        height: 500,
+                                        cssclass: 'tinyeditor',
+                                        controlclass: 'tinyeditor-control',
+                                        rowclass: 'tinyeditor-header',
+                                        dividerclass: 'tinyeditor-divider',
+                                        controls: ['bold', 'italic', 'underline', 'strikethrough', '|', 'subscript', 'superscript', '|',
+                                            'orderedlist', 'unorderedlist', '|', 'outdent', 'indent', '|', 'leftalign',
+                                            'centeralign', 'rightalign', 'blockjustify', '|', 'unformat', '|', 'undo', 'redo', 'n',
+                                            'font', 'size', 'style', '|', 'image', 'hr', 'link', 'unlink'],
+                                        footer: true,
+                                        fonts: ['Helvetica', 'Arial', 'lucida grande', 'tahoma', 'verdana', 'arial', 'sans-serif'],
+                                        xhtml: true,
+                                        cssfile: 'custom.css',
+                                        bodyid: 'editor',
+                                        footerclass: 'tinyeditor-footer',
+                                        toggle: {text: 'source', activetext: 'wysiwyg', cssclass: 'toggle'},
+                                        resize: {cssclass: 'resize'}
+                                    });
                                     div1.append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;"));
                                     div1.append($("<a>").css("font-size", "16px").attr("href", "javascript:").attr("class", "classa").text("Simpan").click(function() {
                                         if (input.val().length == 0
@@ -697,11 +744,12 @@
                                                 || input2.val().length == 0) {
                                             alert("Silahkan Tuliskan Usulan Anda.")
                                         } else {
+                                            tinyeditor.post();
                                             var menteri_ = unescape(menteri);
                                             $.ajax({
                                                 url: "/action?form_action=setSet2&session=" + Math.random()
                                                 , type: "POST"
-                                                , data: JSON.stringify({menteri: menteri_, input0: input0_, type0: type0_, input: input_, value: input.val().substr(0, 499), value1: input1.val().substr(0, 499), value2: input2.val().substr(0, 8000)})
+                                                , data: JSON.stringify({menteri: menteri_, input0: input0_, type0: type0_, input: input_, value: input.val().substr(0, 499), value1: input1.val().substr(0, 499), value2: input2.val()})
                                                 , dataType: 'json'
                                                 , mimeType: "application/json"
                                                 , contentType: "application/json"
@@ -755,19 +803,19 @@
                 span.html("");
                 var img;
                 var img1;
-                var textSetuju=$("<span>").css("text-align", "center").css("font-size", "11px").html("&nbsp;Setuju&nbsp;");
-                var texttdkSetuju=$("<span>").css("text-align", "center").css("font-size", "11px").html("&nbsp;Tidak Setuju&nbsp;");
+                var textSetuju = $("<span>").css("text-align", "center").css("font-size", "11px").html("&nbsp;Setuju&nbsp;");
+                var texttdkSetuju = $("<span>").css("text-align", "center").css("font-size", "11px").html("&nbsp;Tidak Setuju&nbsp;");
                 if (type == 1 || type == 3) {
                     var dislike = dislike_img;
                     var like = like_img;
                     if (type == 1) {
                         if (parseInt(result.AlasanStar.star) > 0) {
                             like = like_selected_img;
-                            textSetuju.css("color","#207bf4");
+                            textSetuju.css("color", "#207bf4");
                         }
                         if (parseInt(result.AlasanStar.star) < 0) {
                             dislike = dislike_selected_img;
-                            texttdkSetuju.css("color","#207bf4");
+                            texttdkSetuju.css("color", "#207bf4");
                         }
                     }
 
@@ -809,17 +857,17 @@
                 if (type == 2) {
                     img = buildImgevent(dislike_img, 11, 0, function() {
                         $(this).attr("src", dislike_selected_img);
-                        texttdkSetuju.css("color","#207bf4");
+                        texttdkSetuju.css("color", "#207bf4");
                     }, function() {
                         if (parseInt($(this).data("val")) >= 0) {
                             $(this).attr("src", dislike_img);
-                            texttdkSetuju.css("color","black");
+                            texttdkSetuju.css("color", "black");
                         }
                     }, function() {
                         if (parseInt($(this).data("val")) >= 0) {
                             $(this).attr("src", dislike_selected_img);
-                            texttdkSetuju.css("color","#207bf4");
-                            textSetuju.css("color","black");
+                            texttdkSetuju.css("color", "#207bf4");
+                            textSetuju.css("color", "black");
                             $(this).data("val", "-1");
                             img1.attr("src", like_img);
                             img1.data("val", "0");
@@ -828,17 +876,17 @@
                     });
                     img1 = buildImgevent(like_img, 11, 0, function() {
                         $(this).attr("src", like_selected_img);
-                        textSetuju.css("color","#207bf4");
+                        textSetuju.css("color", "#207bf4");
                     }, function() {
                         if (parseInt($(this).data("val")) <= 0) {
                             $(this).attr("src", like_img);
-                            textSetuju.css("color","black");
+                            textSetuju.css("color", "black");
                         }
                     }, function() {
                         if (parseInt($(this).data("val")) <= 0) {
                             $(this).attr("src", like_selected_img);
-                            textSetuju.css("color","#207bf4");
-                            texttdkSetuju.css("color","black");
+                            textSetuju.css("color", "#207bf4");
+                            texttdkSetuju.css("color", "black");
                             $(this).data("val", "1");
                             img.attr("src", dislike_img);
                             img.data("val", "0");
@@ -986,14 +1034,7 @@
                             sumber.append($("<a>").attr("class", "classa").css("font-size", "14px").attr("href", src).attr("target", data.nama).text(src));
 
                         } else {
-                            var divx = $("<div>").html(data.detail).appendTo(divx0);
-                            divx.jqte();
-                            divx0.find('div.jqte_editor')[0].setAttribute("contenteditable", false);
-                            //divx0.find('div.jqte_editor')[0].style.width = "600px";
-                            divx0.find('div.jqte_toolbar')[0].innerHTML = "";
-                            //divx0.find('div.jqte_toolbar')[0].style.width = "600px";
-                            divx0.find('div.jqte_toolbar')[0].style.display = "none";
-                            //divx0.find('div.jqte')[0].style.width = "600px";
+                            var divx = $("<div>").html(data.detail).width("100%").css("overflow","auto").css("background-color","white").css("max-height","500px").appendTo(divx0);
                         }
                         var text = "";
                         try {
@@ -1399,7 +1440,7 @@
         <br/><br/>
         <hr>
 
-        <span style="font-size: 9px;">@178142130SGT</span>
+        <span style="font-size: 9px;">@1808140030SGT</span>
 
 
 
