@@ -526,6 +526,7 @@
                                 }
                             } else {
                                 td.html("");
+                                setCommentColPosisi(td, dept, tddet, input_, data, divx);
                             }
                         } catch (e) {
                         }
@@ -556,33 +557,37 @@
                 var textarea = $("<textarea>").attr("rows", "2").attr("cols", "40").appendTo(td);
                 td.append($("<br>"));
                 td.append($("<button>").css("cursor", "pointer").attr("class", "classa").attr("href", "javascript:").text("Simpan").click(function() {
-                    if (parseInt(div.data("val")) == 0) {
-                        alert("Silahkan Tentukan Penilaian berserta Alasan Anda");
-                    } else {
-                        $.ajax({
-                            url: "/action?form_action=postCommentPosisi&session=" + Math.random()
-                            , type: "POST"
-                            , data: JSON.stringify({dept: dept, star: div.data("val"), comment: textarea.val().substr(0, 499)})
-                            , dataType: 'json'
-                            , mimeType: "application/json"
-                            , contentType: "application/json"
-                            , cache: false
-                            , success: function(result) {
-                                try {
-                                    getMyCommentPosisi(td, dept, tddet, input_, data, divx);
-                                } catch (e) {
+                    if (userAccount.id) {
+                        if (parseInt(div.data("val")) == 0) {
+                            alert("Silahkan Tentukan Penilaian berserta Alasan Anda");
+                        } else {
+                            $.ajax({
+                                url: "/action?form_action=postCommentPosisi&session=" + Math.random()
+                                , type: "POST"
+                                , data: JSON.stringify({dept: dept, star: div.data("val"), comment: textarea.val().substr(0, 499)})
+                                , dataType: 'json'
+                                , mimeType: "application/json"
+                                , contentType: "application/json"
+                                , cache: false
+                                , success: function(result) {
+                                    try {
+                                        getMyCommentPosisi(td, dept, tddet, input_, data, divx);
+                                    } catch (e) {
+
+                                    }
+                                }
+                                , error: function() {
 
                                 }
-                            }
-                            , error: function() {
+                                , complete: function() {
 
-                            }
-                            , complete: function() {
-
-                            }
-                        });
-                        div.hide();
-                        textarea.hide();
+                                }
+                            });
+                            div.hide();
+                            textarea.hide();
+                        }
+                    } else {
+                        alert("Silahkan Login terlebih dahulu dengan menggunakan Facebook atau Google+");
                     }
                 }));
                 td.append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;"));
@@ -1034,7 +1039,7 @@
                             sumber.append($("<a>").attr("class", "classa").css("font-size", "14px").attr("href", src).attr("target", data.nama).text(src));
 
                         } else {
-                            var divx = $("<div>").html(data.detail).width("100%").css("overflow","auto").css("background-color","white").css("max-height","500px").appendTo(divx0);
+                            var divx = $("<div>").html(data.detail).width("100%").css("overflow", "auto").css("background-color", "white").css("max-height", "500px").appendTo(divx0);
                         }
                         var text = "";
                         try {
@@ -1152,6 +1157,7 @@
                                 }
                             } else {
                                 div1.html("");
+                                setCommentCol(div1, dept, namaCalon, data, divx, tdx);
                             }
                             tdx.attr("data-sort-index", "1").attr("data-sort", parseInt(result.total));
                         } catch (e) {
@@ -1238,34 +1244,38 @@
                 var textarea = $("<textarea>").attr("rows", "2").attr("cols", "40").appendTo(div1);
                 div1.append($("<br>"));
                 div1.append($("<button>").css("cursor", "pointer").attr("class", "classa").attr("href", "javascript:").text("Simpan").click(function() {
-                    if (parseInt(div.data("val")) == 0) {
-                        alert("Silahkan Tentukan Penilaian Anda");
-                    } else {
-                        $.ajax({
-                            url: "/action?form_action=postComment&session=" + Math.random()
-                            , type: "POST"
-                            , data: JSON.stringify({dept: dept, star: div.data("val"), comment: textarea.val().substr(0, 499), namaCalon: namaCalon})
-                            , dataType: 'json'
-                            , mimeType: "application/json"
-                            , contentType: "application/json"
-                            , cache: false
-                            , success: function(result) {
-                                try {
-                                    getMyComment(div1, dept, namaCalon, data, divx, tdx);
-                                } catch (e) {
+                    if (userAccount.id) {
+                        if (parseInt(div.data("val")) == 0) {
+                            alert("Silahkan Tentukan Penilaian Anda");
+                        } else {
+                            $.ajax({
+                                url: "/action?form_action=postComment&session=" + Math.random()
+                                , type: "POST"
+                                , data: JSON.stringify({dept: dept, star: div.data("val"), comment: textarea.val().substr(0, 499), namaCalon: namaCalon})
+                                , dataType: 'json'
+                                , mimeType: "application/json"
+                                , contentType: "application/json"
+                                , cache: false
+                                , success: function(result) {
+                                    try {
+                                        getMyComment(div1, dept, namaCalon, data, divx, tdx);
+                                    } catch (e) {
+
+                                    }
+                                }
+                                , error: function() {
 
                                 }
-                            }
-                            , error: function() {
+                                , complete: function() {
 
-                            }
-                            , complete: function() {
+                                }
+                            });
+                            div.hide();
+                            textarea.hide();
 
-                            }
-                        });
-                        div.hide();
-                        textarea.hide();
-
+                        }
+                    } else {
+                        alert("Silahkan Login terlebih dahulu dengan menggunakan Facebook atau Google+")
                     }
                 }));
                 div1.append($("<span>").css("color", "#363C38").css("font-size", "10px").html("&nbsp;-&nbsp;"));
@@ -1440,7 +1450,7 @@
         <br/><br/>
         <hr>
 
-        <span style="font-size: 9px;">@1808140030SGT</span>
+        <span style="font-size: 9px;">@1908140030SGT</span>
 
 
 

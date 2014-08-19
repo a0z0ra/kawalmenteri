@@ -210,7 +210,6 @@ public class action extends HttpServlet {
                 String id = userAccount.get("id").toString();
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
-                postData(name, dept, "", star, comment, id, "AlasanStarPosisi", dept, link, link);
                 postData2(name, dept, "", star, comment, id, "AlasanStarCalonPosisi", "dept", dept, link);
 
                 record.put("status", "OK");
@@ -240,7 +239,6 @@ public class action extends HttpServlet {
                 JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
-                postData1("AlasanLike", id, link, star, link, name);
                 postData1("AlasanStarLike", "id", id, star, link, name);
 
                 record.put("status", "OK");
@@ -267,30 +265,13 @@ public class action extends HttpServlet {
                 JSONObject obj1 = (JSONObject) obj;
                 idx_ = obj1.get("id").toString();
                 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-                LinkedHashMap record1 = new LinkedHashMap();
+                LinkedHashMap record11 = new LinkedHashMap();
+                String link_ = "";
                 try {
                     JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                    String link_ = userAccount.get("link").toString();
-                    Key guestbookKey = KeyFactory.createKey(idx_, link_);
-                    // Run an ancestor query to ensure we see the most up-to-date
-                    // view of the Greetings belonging to the selected Guestbook.
-                    Query query = new Query("AlasanLike", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
-                    //List<Entity> AlasanStars = datastore.prepare(query);
-                    PreparedQuery pq = datastore.prepare(query);
-                    for (Entity AlasanStar : pq.asIterable()) {
-                        String date = AlasanStar.getProperty("date").toString();
-                        String star = AlasanStar.getProperty("star").toString();
-                        String name = AlasanStar.getProperty("user").toString();
-                        String link = AlasanStar.getProperty("link").toString();
-                        record1.put("date", date);
-                        record1.put("star", star);
-                        record1.put("name", name);
-                        record1.put("link", link);
-                    }
+                    link_ = userAccount.get("link").toString();
                 } catch (Exception e) {
                 }
-                record.put("AlasanStar", record1);
-
                 Key guestbookKey = KeyFactory.createKey("id", idx_);
                 // Run an ancestor query to ensure we see the most up-to-date
                 // view of the Greetings belonging to the selected Guestbook.
@@ -307,7 +288,7 @@ public class action extends HttpServlet {
                 double totalp = 0;
                 double totaln = 0;
                 for (Entity AlasanStar : pq.asIterable()) {
-                    record1 = new LinkedHashMap();
+                    LinkedHashMap record1 = new LinkedHashMap();
                     String date = AlasanStar.getProperty("date").toString();
                     String star = AlasanStar.getProperty("star").toString();
                     String name = AlasanStar.getProperty("user").toString();
@@ -329,6 +310,12 @@ public class action extends HttpServlet {
                         in++;
                         totaln = totaln + d;
                     }
+                    if (link_.equalsIgnoreCase(link)) {
+                        record11.put("date", date);
+                        record11.put("star", star);
+                        record11.put("name", name);
+                        record11.put("link", link);
+                    }
                 }
                 double avg = total / i;
                 if (i == 0) {
@@ -342,6 +329,7 @@ public class action extends HttpServlet {
                 //record.put("AlasanStars", obj11);
                 record.put("AlasanStarsp", obj11p);
                 record.put("AlasanStarsn", obj11n);
+                record.put("AlasanStar", record11);
                 record.put("status", "OK");
             } catch (Exception e) {
                 record.put("status", "error");
@@ -368,42 +356,15 @@ public class action extends HttpServlet {
                 //JSONArray records = (JSONArray) obj;
                 JSONObject obj1 = (JSONObject) obj;
                 dept = obj1.get("dept").toString();
+                String link_ = "";
                 try {
                     JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                    String id_ = userAccount.get("id").toString();
-                    String link_ = userAccount.get("link").toString();
-                    Key guestbookKey = KeyFactory.createKey(dept, link_);
-                    // Run an ancestor query to ensure we see the most up-to-date
-                    // view of the Greetings belonging to the selected Guestbook.
-                    Query query = new Query("AlasanStarPosisi", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
-                    //List<Entity> AlasanStars = datastore.prepare(query);
-                    PreparedQuery pq = datastore.prepare(query);
-                    for (Entity AlasanStar : pq.asIterable()) {
-                        String id = AlasanStar.getProperty("user").toString();
-                        Date time = (Date) AlasanStar.getProperty("date");
-                        String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
-                        String star = AlasanStar.getProperty("star").toString();
-                        String comment = AlasanStar.getProperty("comment").toString();
-                        String name = AlasanStar.getProperty("name").toString();
-                        String link = AlasanStar.getProperty("link").toString();
-                        String id__ = AlasanStar.getKey().toString();
-                        record1.put("id_", id__);
-                        record1.put("id", id);
-                        record1.put("date", date);
-                        record1.put("star", star);
-                        record1.put("comment", comment);
-                        record1.put("name", name);
-                        record1.put("link", link);
-                    }
+                    link_ = userAccount.get("link").toString();
                 } catch (Exception e) {
                 }
-                record.put("AlasanStar", record1);
-
+                LinkedHashMap record11 = new LinkedHashMap();
                 Key guestbookKey = KeyFactory.createKey("dept", dept);
-                // Run an ancestor query to ensure we see the most up-to-date
-                // view of the Greetings belonging to the selected Guestbook.
                 Query query = new Query("AlasanStarCalonPosisi", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
-                //List<Entity> AlasanStars = datastore.prepare(query);
                 PreparedQuery pq = datastore.prepare(query);
                 JSONArray obj11 = new JSONArray();
                 JSONArray obj11p = new JSONArray();
@@ -446,6 +407,15 @@ public class action extends HttpServlet {
                         in++;
                         totaln = totaln + d;
                     }
+                    if (link_.equalsIgnoreCase(link)) {
+                        record11.put("id_", id__);
+                        record11.put("id", id);
+                        record11.put("date", date);
+                        record11.put("star", star);
+                        record11.put("comment", comment);
+                        record11.put("name", name);
+                        record11.put("link", link);
+                    }
                 }
                 double avg = total / i;
                 if (i == 0) {
@@ -459,6 +429,7 @@ public class action extends HttpServlet {
                 //record.put("AlasanStars", obj11);
                 record.put("AlasanStarsp", obj11p);
                 record.put("AlasanStarsn", obj11n);
+                record.put("AlasanStar", record11);
                 record.put("status", "OK");
             } catch (Exception e) {
                 record.put("status", "error");
@@ -488,9 +459,7 @@ public class action extends HttpServlet {
                 String id = userAccount.get("id").toString();
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
-                postData(name, dept, namaCalon, star, comment, id, "AlasanStar", dept + namaCalon, link, link);
                 postData2(name, dept, namaCalon, star, comment, id, "AlasanStarCalon", dept, namaCalon, link);
-
                 record.put("status", "OK");
             } catch (Exception e) {
                 record.put("status", "error");
@@ -516,48 +485,16 @@ public class action extends HttpServlet {
                 JSONObject obj1 = (JSONObject) obj;
                 dept = obj1.get("dept").toString();
                 namaCalon = obj1.get("namaCalon").toString();
-                LinkedHashMap record1 = new LinkedHashMap();
                 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+                String link_ = "";
+                LinkedHashMap record11 = new LinkedHashMap();
                 try {
                     JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
-                    String id_ = userAccount.get("id").toString();
-                    String link_ = userAccount.get("link").toString();
-
-                    Key guestbookKey = KeyFactory.createKey(dept + namaCalon, link_);
-                    // Run an ancestor query to ensure we see the most up-to-date
-                    // view of the Greetings belonging to the selected Guestbook.
-                    Query query = new Query("AlasanStar", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
-                    //List<Entity> AlasanStars = datastore.prepare(query);
-                    PreparedQuery pq = datastore.prepare(query);
-
-                    for (Entity AlasanStar : pq.asIterable()) {
-                        String id = AlasanStar.getProperty("user").toString();
-                        Date time = (Date) AlasanStar.getProperty("date");
-                        String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
-                        String star = AlasanStar.getProperty("star").toString();
-                        String comment = AlasanStar.getProperty("comment").toString();
-                        String name = AlasanStar.getProperty("name").toString();
-                        String link = AlasanStar.getProperty("link").toString();
-                        String id__ = AlasanStar.getKey().toString();
-                        record1.put("id_", id__);
-                        record1.put("id", id);
-                        record1.put("date", date);
-                        record1.put("star", star);
-                        record1.put("comment", comment);
-                        record1.put("name", name);
-                        record1.put("link", link);
-                    }
+                    link_ = userAccount.get("link").toString();
                 } catch (Exception e) {
-                    record.put("status", "error");
-                    record.put("errormsg", e.toString());
                 }
-                record.put("AlasanStar", record1);
-
                 Key guestbookKey = KeyFactory.createKey(dept, namaCalon);
-                // Run an ancestor query to ensure we see the most up-to-date
-                // view of the Greetings belonging to the selected Guestbook.
                 Query query = new Query("AlasanStarCalon", guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
-                //List<Entity> AlasanStars = datastore.prepare(query);
                 PreparedQuery pq = datastore.prepare(query);
                 JSONArray obj11 = new JSONArray();
                 JSONArray obj11p = new JSONArray();
@@ -569,7 +506,7 @@ public class action extends HttpServlet {
                 double totalp = 0;
                 double totaln = 0;
                 for (Entity AlasanStar : pq.asIterable()) {
-                    record1 = new LinkedHashMap();
+                    LinkedHashMap record1 = new LinkedHashMap();
                     String id = AlasanStar.getProperty("user").toString();
                     Date time = (Date) AlasanStar.getProperty("date");
                     String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
@@ -599,6 +536,15 @@ public class action extends HttpServlet {
                         in++;
                         totaln = totaln + d;
                     }
+                    if (link_.equalsIgnoreCase(link)) {
+                        record11.put("id_", id__);
+                        record11.put("id", id);
+                        record11.put("date", date);
+                        record11.put("star", star);
+                        record11.put("comment", comment);
+                        record11.put("name", name);
+                        record11.put("link", link);
+                    }
                 }
                 double avg = total / i;
                 if (i == 0) {
@@ -609,9 +555,9 @@ public class action extends HttpServlet {
                 record.put("totalp", totalp);
                 record.put("totaln", totaln);
                 record.put("avg", df.format(avg));
-                //record.put("AlasanStars", obj11);
                 record.put("AlasanStarsp", obj11p);
                 record.put("AlasanStarsn", obj11n);
+                record.put("AlasanStar", record11);
                 record.put("status", "OK");
             } catch (Exception e) {
                 record.put("status", "error");
@@ -1283,43 +1229,42 @@ public class action extends HttpServlet {
         }
     }
 
-    private void postData(String name, String dept, String namaCalon, String star, String comment, String id, String table, String key, String keyVal, String link) {
+    /*private void postData(String name, String dept, String namaCalon, String star, String comment, String id, String table, String key, String keyVal, String link) {
 
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Key guestbookKey = KeyFactory.createKey(key, keyVal);
-        // Run an ancestor query to ensure we see the most up-to-date
-        // view of the Greetings belonging to the selected Guestbook.
-        Query query = new Query(table, guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
-        List<Entity> AlasanStars = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1));
-        Date date = new Date();
+     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+     Key guestbookKey = KeyFactory.createKey(key, keyVal);
+     // Run an ancestor query to ensure we see the most up-to-date
+     // view of the Greetings belonging to the selected Guestbook.
+     Query query = new Query(table, guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+     List<Entity> AlasanStars = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1));
+     Date date = new Date();
 
-        if (AlasanStars.isEmpty()) {
-            Entity AlasanStar = new Entity(table, guestbookKey);
-            AlasanStar.setProperty("user", id);
-            AlasanStar.setProperty("date", date);
-            AlasanStar.setProperty("dept", dept);
-            AlasanStar.setProperty("star", star);
-            AlasanStar.setProperty("comment", comment);
-            AlasanStar.setProperty("name", name);
-            AlasanStar.setProperty("namaCalon", namaCalon);
-            AlasanStar.setProperty("link", link);
-            datastore.put(AlasanStar);
-        } else {
-            for (Entity AlasanStar : AlasanStars) {
-                AlasanStar.setProperty("user", id);
-                AlasanStar.setProperty("date", date);
-                AlasanStar.setProperty("dept", dept);
-                AlasanStar.setProperty("star", star);
-                AlasanStar.setProperty("comment", comment);
-                AlasanStar.setProperty("name", name);
-                AlasanStar.setProperty("namaCalon", namaCalon);
-                AlasanStar.setProperty("link", link);
-                datastore.put(AlasanStar);
-            }
+     if (AlasanStars.isEmpty()) {
+     Entity AlasanStar = new Entity(table, guestbookKey);
+     AlasanStar.setProperty("user", id);
+     AlasanStar.setProperty("date", date);
+     AlasanStar.setProperty("dept", dept);
+     AlasanStar.setProperty("star", star);
+     AlasanStar.setProperty("comment", comment);
+     AlasanStar.setProperty("name", name);
+     AlasanStar.setProperty("namaCalon", namaCalon);
+     AlasanStar.setProperty("link", link);
+     datastore.put(AlasanStar);
+     } else {
+     for (Entity AlasanStar : AlasanStars) {
+     AlasanStar.setProperty("user", id);
+     AlasanStar.setProperty("date", date);
+     AlasanStar.setProperty("dept", dept);
+     AlasanStar.setProperty("star", star);
+     AlasanStar.setProperty("comment", comment);
+     AlasanStar.setProperty("name", name);
+     AlasanStar.setProperty("namaCalon", namaCalon);
+     AlasanStar.setProperty("link", link);
+     datastore.put(AlasanStar);
+     }
 
-        }
-    }
-
+     }
+     }*/
     private void postData1(String table, String key, String keyVal, String val, String link, String user) {
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -1337,16 +1282,17 @@ public class action extends HttpServlet {
             AlasanStar.setProperty("star", val);
             AlasanStar.setProperty("link", link);
             datastore.put(AlasanStar);
-        } else {
-            for (Entity AlasanStar : AlasanStars) {
-                AlasanStar.setProperty("user", user);
-                AlasanStar.setProperty("date", date);
-                AlasanStar.setProperty("star", val);
-                AlasanStar.setProperty("link", link);
-                datastore.put(AlasanStar);
-            }
+        } /*else {
+         for (Entity AlasanStar : AlasanStars) {
+         AlasanStar.setProperty("user", user);
+         AlasanStar.setProperty("date", date);
+         AlasanStar.setProperty("star", val);
+         AlasanStar.setProperty("link", link);
+         datastore.put(AlasanStar);
+         }
 
-        }
+         }*/
+
     }
 
     private void postData2(String name, String dept, String namaCalon, String star, String comment, String id, String table, String key, String keyVal, String link) {
