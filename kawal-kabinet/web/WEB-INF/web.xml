@@ -4,9 +4,17 @@
         <servlet-name>action</servlet-name>
         <servlet-class>action</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>admin</servlet-name>
+        <servlet-class>admin</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>action</servlet-name>
         <url-pattern>/action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>admin</servlet-name>
+        <url-pattern>/admin</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

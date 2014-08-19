@@ -8,7 +8,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Index.Property;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -17,12 +16,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Text;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.repackaged.com.google.api.client.util.DateTime;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -239,7 +233,7 @@ public class action extends HttpServlet {
                 JSONObject userAccount = (JSONObject) session.getAttribute("userAccount");
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
-                postData1("AlasanStarLike", "id", id, star, link, name);
+                postData11("AlasanStarLike", "id", id, star, link, name);
 
                 record.put("status", "OK");
             } catch (Exception e) {
@@ -1265,13 +1259,45 @@ public class action extends HttpServlet {
 
      }
      }*/
+    //("AlasanStarLike", "id", id, star, link, name)
     private void postData1(String table, String key, String keyVal, String val, String link, String user) {
-
+        System.out.println(keyVal);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Key guestbookKey = KeyFactory.createKey(key, keyVal);
         // Run an ancestor query to ensure we see the most up-to-date
         // view of the Greetings belonging to the selected Guestbook.
         Query query = new Query(table, guestbookKey).addSort("date", Query.SortDirection.DESCENDING);
+        List<Entity> AlasanStars = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1));
+        Date date = new Date();
+
+        if (AlasanStars.isEmpty()) {
+            Entity AlasanStar = new Entity(table, guestbookKey);
+            AlasanStar.setProperty("user", user);
+            AlasanStar.setProperty("date", date);
+            AlasanStar.setProperty("star", val);
+            AlasanStar.setProperty("link", link);
+            datastore.put(AlasanStar);
+        } /*else {
+         for (Entity AlasanStar : AlasanStars) {
+         AlasanStar.setProperty("user", user);
+         AlasanStar.setProperty("date", date);
+         AlasanStar.setProperty("star", val);
+         AlasanStar.setProperty("link", link);
+         datastore.put(AlasanStar);
+         }
+
+         }*/
+
+    }
+    
+     private void postData11(String table, String key, String keyVal, String val, String link, String user) {
+        System.out.println(keyVal);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key guestbookKey = KeyFactory.createKey(key, keyVal);
+        Filter linkFilter = new FilterPredicate("link", FilterOperator.EQUAL, link);
+        // Run an ancestor query to ensure we see the most up-to-date
+        // view of the Greetings belonging to the selected Guestbook.
+        Query query = new Query(table, guestbookKey).setFilter(linkFilter).addSort("date", Query.SortDirection.DESCENDING);
         List<Entity> AlasanStars = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1));
         Date date = new Date();
 
@@ -1315,6 +1341,11 @@ public class action extends HttpServlet {
             AlasanStar.setProperty("link", link);
             datastore.put(AlasanStar);
         }
+    }
+
+    private String replace(String inp) {
+        String val = inp.replace(" ", "").replace(",", "").replace(".", "").replace("`", "").replace("~", "").replace("!", "").replace("@", "").replace("#", "").replace("$", "").replace("%", "").replace("^", "").replace("&", "").replace("*", "").replace("(", "").replace(")", "").replace("+", "").replace("|", "").replace("{", "").replace("}", "").replace("[", "").replace("]", "").replace(":", "").replace(";", "").replace("\"", "").replace("'", "").replace("?", "").replace("/", "");
+        return val;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
