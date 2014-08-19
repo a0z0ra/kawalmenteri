@@ -3,20 +3,20 @@ body {font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sa
 #title {margin:0px;padding:0px;margin-left: 10px;}
 #title, #navlinks, #selamatdatang, #acctName  {display:inline-block;color:white;margin-top: 7px;}
 #selamatdatang {position:absolute;right:10px;}
-
-
-
 #navlinks  { margin:0px; padding:0px; }
 #navlinks li { display:inline-block; border-left:1px solid rgb(59, 89, 152); padding:5px;}
 #navlinks li:first-child {border:0px;}
-#kawaldetailtr {padding:20px 20px 30px; margin:0px; background-color:#EFEFEF;display:none; line-height:15pt; }
-#twitterwidget, #countdown {margin:20px;}
+#kawaldetailtr {padding:30px 20px; margin:0px; background-color:#CCC;display:none; line-height:15pt; }
+#countdown {margin:20px;}
+#twitterwidget {width:20%;}
 .external-link {background:url('external-link-ltr-icon.png') no-repeat right top; padding-right:12px;}
 .right {float:right;}
 .left {float:left;}
 
-
+#wrapper {width:75%; border-radius:5px; margin-right:1%;}
+#mainContent {width:98%; background:#EFEFEF;  padding:1%;}
 #content {width:100%;}
+#content h3 {margin:0;}
 /*
 #content table {width:100%;}
 */
@@ -189,7 +189,10 @@ tr:nth-child(odd) { background:  #fbfbfb;}
    text-align: right;
 }
 h1 { display:inline-block;}
-
+hr {clear:both; visibility:hidden;}
+a.mainLinks {display:inline-block;background:#DDD; color:#999; font-size:14pt; text-decoration:none;margin:0 5px;padding:10px; border-radius:10px 10px 0 0;}
+a.mainLinks:hover {color:red;}
+a.mainLinks.focus, a.mainLinks.active {color:red; background:#EFEFEF;}
 
 #tableContainer-1 {
     height: 100%;

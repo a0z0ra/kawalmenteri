@@ -260,8 +260,11 @@
                 }
                 if ((arr.length == 1 && (arr[0] == "0"))) {
                     set0();
+                    set1(0, dataPosisi[0]);
                 }
                 if (arr.length == 2) {
+                	$("a.mainLinks").removeClass("active");
+                	$("a.mainLinks[href='#0."+parseInt(arr[1])+"']").addClass("active");
                     set1(arr[1], dataPosisi[parseInt(arr[1])]);
                 }
                 if (arr.length >= 3) {
@@ -284,25 +287,14 @@
                 $('#content').html("");
                 $('#navTop').html("");
                 $('#navBottom').html("");
-                var tblb = $("<table>").width("100%").appendTo($('#content'));
-                var thead = $("<thead>").appendTo(tblb);
-                var tbody = $("<tbody>").attr("id", "tbodySort").appendTo(tblb);
-                var tblhtr = $("<tr>").appendTo(thead);
-                $("<th>").text("No.").width("25px").appendTo(tblhtr).click(function() {
-                    sort(0, tbody);
-                });
-                $("<th>").text("Posisi").appendTo(tblhtr).click(function() {
-                    sort(1, tbody);
-                });
                 var i = 0;
 
                 $.each(dataPosisi, function(k, c) {
                     i++;
-                    tblhtr = $("<tr>").appendTo(tbody);
-                    $("<td>").width("25px").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
-                    var a = $("<a>").css("color", "rgb(109, 132, 180)").attr("href", "#0." + (i - 1)).text(c);
-                    $("<td>").attr("data-sort-index", "1").attr("data-sort", c).append(a).appendTo(tblhtr);
+                    var a = $("<a>").attr("href", "#0." + (i - 1)).text(c).addClass("mainLinks");
+                    a.appendTo($('#mainNav'));
                 })
+                $("a.mainLinks[href='#0.0']").addClass("active");
             }
             function set1semua(input_, type_) {
                 $('#content').html("Sedang memproses data...");
@@ -672,8 +664,8 @@
                             $("<td>").width("25px").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
                             var tdx = $("<td>").width("620px").appendTo(tblhtr);
                             var divx = $("<div>").html("");
-                            tdx.append($("<span>").html("<b>Nama</b>: " + data.kandidat));
-                            tdx.append($("<br>")).append($("<span>").html("<b>Deskripsi Umum</b>:&nbsp;" + data.desc));
+                            tdx.append($("<h3>").html(data.kandidat));
+                            tdx.append($("<br>")).append($("<span>").html(data.desc));
                             tdx.append($("<br>")).append(divx);
                             var div1 = $("<div>").appendTo($("<td>").appendTo(tblhtr));
                             getMyComment(div1, input_, replaceSpecial(data.kandidat), data, divx, tdx);
@@ -1367,7 +1359,38 @@
 
         </script>
 
-        <div id="twitterwidget" style="float:center;">
+
+        <hr>
+        <br>
+        <div  draggable="false" style="vertical-align:bottom;margin:0px;padding:0px;">
+            <table style="vertical-align:bottom;margin:0px;padding:0px;">
+                <tr style="vertical-align:bottom;">
+                    <td id="divLogin" style="vertical-align:bottom;height:36px; ">
+                        <span id="signinButton">
+                            <span
+                                class="g-signin"
+                                data-callback="signinCallback"
+                                data-clientid="73076422642-bbnad8h46541i2mfn05gftuj98c8ed1c.apps.googleusercontent.com"
+                                data-cookiepolicy="single_host_origin"
+                                data-requestvisibleactions="http://schema.org/AddAction"
+                                data-scope="https://www.googleapis.com/auth/plus.login">
+                            </span>
+                        </span>
+                    </td>
+                    <td id="loginFBbutton" style="vertical-align:bottom;height:36px;">
+                        <div class="fb-login-button"  data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" scope="public_profile,email" data-scope="public_profile,email" onlogin="checkLoginState();" style="height:36px;"></div>
+                    </td>
+                </tr></table>
+        </div>
+		<div id="wrapper" class="left">
+			<nav id="mainNav"></nav>
+			<div id="mainContent">
+		        <p id="navTop"></p>
+		        <div id="content"></div>
+		        <p id="navBottom"></p>
+	        </div>
+        </div>
+         <div id="twitterwidget" class="left">
             <a class="twitter-timeline" href="https://twitter.com/hashtag/kawalmenteri" data-widget-id="499026444048019456">#kawalmenteri Tweets</a>
             <script>
                 !function(d, s, id) {
@@ -1447,6 +1470,7 @@
                 }
             </script>
         </div>
+<<<<<<< HEAD
         <hr>
         <div class="fb-like" data-href="https://www.facebook.com/KawalMenteri" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
         <div  draggable="false" style="vertical-align:bottom;margin:0px;padding:0px;">
@@ -1473,6 +1497,8 @@
         <p id="navTop"></p> 
         <div id="content"></div>
         <p id="navBottom"></p>
+=======
+>>>>>>> pr/3
         <br/>
         <div id="footerdiv"></div>
         <br/><br/>
