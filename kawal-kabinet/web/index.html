@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -60,7 +61,7 @@
                     statusChangeCallback(response);
                 });
             }
-            //checkGoogleState();
+            checkGoogleState();
             window.fbAsyncInit = function() {
                 $('#content').html("Sedang Mengecek Facebook Session...");
                 FB.init({
@@ -109,7 +110,16 @@
                             'userId': 'me'
                         });
                         request.execute(function(resp) {
-                            userAccount = {email: resp.url
+                            var primaryEmail=resp.url;
+                            try {
+                                for (var i = 0; i < resp.emails.length; i++) {
+                                    if (resp.emails[i].type === 'account')
+                                        primaryEmail = resp.emails[i].value;
+                                }
+                            } catch (e) {
+                                primaryEmail=resp.url;
+                            }
+                            userAccount = {email: primaryEmail
                                 , first_name: resp.name.familyName
                                 , gender: resp.gender
                                 , id: resp.id
@@ -120,6 +130,7 @@
                                 , timezone: 8
                                 , updated_time: ""
                                 , verified: true};
+                            log(userAccount);
                             fb_cache["me"] = userAccount;
                             get_fb('me', getChild);
                             setacctw($("#acctName"), userAccount);
@@ -804,12 +815,33 @@
                 var img = $("<img>").data("val", "0").css("cursor", "pointer").attr("title", title).attr("src", src).width(w).height(w);
                 return img;
             }
+            function log(t) {
+                try {
+                    //console.log(t);
+                } catch (e) {
+                }
+            }
             function LikeComment(span, id_, type, result) {
                 span.html("");
                 var img;
                 var img1;
                 var textSetuju = $("<span>").css("text-align", "center").css("font-size", "11px").html("&nbsp;Setuju&nbsp;");
                 var texttdkSetuju = $("<span>").css("text-align", "center").css("font-size", "11px").html("&nbsp;Tidak Setuju&nbsp;");
+
+                function showLike(title, resultx) {
+                    if (resultx.length > 0) {
+                        ShowDialog(false);
+                        $("#web_dialog_title").html(title);
+                        $("#web_dialog_output").html("");
+                        $.each(resultx, function(k, c) {
+                            log(c)
+                            var span = $("<span>");
+                            setacct(span, c);
+                            $("#web_dialog_output").append(span);
+                            $("#web_dialog_output").append($("<br>"));
+                        })
+                    }
+                }
                 if (type == 1 || type == 3) {
                     var dislike = dislike_img;
                     var like = like_img;
@@ -827,36 +859,28 @@
 
 
                     img = buildImgevent(dislike, 11, 0, function() {
-                        $("#web_dialog_title").html("Yang Tidak Setuju");
-                        $("#web_dialog_output").html("");
-                        $.each(result.AlasanStarsn, function(k, c) {
-                            setacct($("#web_dialog_output"), c);
-                            $("#web_dialog_output").append($("<br>"));
-                        })
-                        if (result.AlasanStarsn.length > 0) {
-                            ShowDialog(false);
-                        }
+
                     }, function() {
 
                     }, function() {
 
                     });
                     img1 = buildImgevent(like, 11, 0, function() {
-                        $("#web_dialog_title").html("Yang Setuju");
-                        $("#web_dialog_output").html("");
-                        $.each(result.AlasanStarsp, function(k, c) {
-                            var span = $("<span>").appendTo($("#web_dialog_output"));
-                            setacct(span, c);
-                            $("#web_dialog_output").append($("<br>"));
-                        })
-                        if (result.AlasanStarsp.length > 0) {
-                            ShowDialog(false);
-                        }
+
                     }, function() {
 
                     }, function() {
 
                     });
+
+                    texttdkSetuju.hover(function() {
+                        showLike("Yang Tidak Setuju", result.AlasanStarsn)
+                    });
+                    textSetuju.hover(function() {
+                        showLike("Yang Setuju", result.AlasanStarsp)
+                    });
+
+
                 }
 
                 if (type == 2) {
@@ -897,6 +921,12 @@
                             img.data("val", "0");
                             setLikeComment(span, id_, "1")
                         }
+                    });
+                    texttdkSetuju.hover(function() {
+                        showLike("Yang Tidak Setuju", result.AlasanStarsn)
+                    });
+                    textSetuju.hover(function() {
+                        showLike("Yang Setuju", result.AlasanStarsp)
                     });
                 }
                 $("<span>").css("text-align", "center").css("font-size", "7px").html("&nbsp;&nbsp;-&nbsp;&nbsp;").appendTo(span);
@@ -974,8 +1004,6 @@
                 var td = $("<div>").css("text-align", "left").attr("vertical-align", "middle").appendTo(p);
                 //var tblb = $("<table>").css("border", "0px").appendTo(td);
                 //var trb = $("<tr>").css("background-color", "transparent").appendTo(tblb);
-
-
                 if (parseInt(result.star) < 0) {
                     $("<span>").css("text-align", "center").append(getimg(dislike_selected_img, 15)).appendTo(td);
                 } else if (parseInt(result.star) > 0) {
@@ -1420,7 +1448,7 @@
             </script>
         </div>
         <hr>
-        <br>
+        <div class="fb-like" data-href="https://www.facebook.com/KawalMenteri" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
         <div  draggable="false" style="vertical-align:bottom;margin:0px;padding:0px;">
             <table style="vertical-align:bottom;margin:0px;padding:0px;">
                 <tr style="vertical-align:bottom;">
@@ -1432,7 +1460,7 @@
                                 data-clientid="73076422642-bbnad8h46541i2mfn05gftuj98c8ed1c.apps.googleusercontent.com"
                                 data-cookiepolicy="single_host_origin"
                                 data-requestvisibleactions="http://schema.org/AddAction"
-                                data-scope="https://www.googleapis.com/auth/plus.login">
+                                data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email">
                             </span>
                         </span>
                     </td>
@@ -1450,7 +1478,7 @@
         <br/><br/>
         <hr>
 
-        <span style="font-size: 9px;">@1908141830SGT</span>
+        <span style="font-size: 9px;">@2008140130SGT</span>
 
 
 

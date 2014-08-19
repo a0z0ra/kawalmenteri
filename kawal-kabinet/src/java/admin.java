@@ -13,9 +13,14 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.repackaged.com.google.api.client.util.DateTime;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.TimeZone;
 import java.util.Vector;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -103,7 +108,8 @@ public class admin extends HttpServlet {
                 String posisi = typeEntity.getProperty("posisi").toString();
                 String nama = typeEntity.getProperty("nama").toString();
                 String link = typeEntity.getProperty("link").toString();
-                String date = typeEntity.getProperty("date").toString();
+                Date time = (Date) typeEntity.getProperty("date");
+                String date = typeEntity.getProperty("date").toString();//getGMT7(time);
                 String reviewed = typeEntity.getProperty("reviewed").toString();
                 record1.put("key", key);
                 record1.put("val", keyValue);
@@ -120,12 +126,14 @@ public class admin extends HttpServlet {
                     detail1 = "";
                 }
                 record1.put("detail", detail1);
-
-                System.out.println(Parent);
-                System.out.println(posisi);
                 JSONArray obj11_ = new JSONArray();
-                getData(obj11_, "kandidat", "kandidat" + Parent, posisi, "", Query.SortDirection.ASCENDING);
+                getData(obj11_, "AlasanStarCalonPosisi", "dept", replace(posisi), "", Query.SortDirection.ASCENDING);
+                record1.put("childKomentar", obj11_);
+
+                obj11_ = new JSONArray();
+                getData(obj11_, "kandidat", "kandidat" + Parent, replace(posisi), "", Query.SortDirection.ASCENDING);
                 record1.put("child", obj11_);
+
             }
             if (table.equalsIgnoreCase("kandidat")) {
                 String reviewed = typeEntity.getProperty("reviewed").toString();
@@ -135,7 +143,8 @@ public class admin extends HttpServlet {
                 String detail = detail0.getValue();
                 String nama1 = typeEntity.getProperty("nama").toString();
                 String link1 = typeEntity.getProperty("link").toString();
-                String date = typeEntity.getProperty("date").toString();
+                Date time = (Date) typeEntity.getProperty("date");
+                String date = typeEntity.getProperty("date").toString();//getGMT7(time);
                 String icwcomment = "";
                 try {
                     icwcomment = typeEntity.getProperty("icwcomment").toString();
@@ -151,10 +160,41 @@ public class admin extends HttpServlet {
                 record1.put("link", link1);
                 record1.put("date", date);
                 record1.put("icwcomment", icwcomment);
-            }
+                record1.put("reviewed", reviewed);
 
+                JSONArray obj11_ = new JSONArray();
+                getData(obj11_, "AlasanStarCalon", keyValue, replace(kandidat), "", Query.SortDirection.ASCENDING);
+                record1.put("childKomentar", obj11_);
+
+            }
+            if (table.equalsIgnoreCase("AlasanStarCalonPosisi") || table.equalsIgnoreCase("AlasanStarCalon")) {
+                String user = typeEntity.getProperty("user").toString();
+                //DateTime dateTime = AlasanStar.getProperties().getDateTimeValue();
+                Date time = (Date) typeEntity.getProperty("date");
+                String date = typeEntity.getProperty("date").toString();//getGMT7(time);
+                String star = typeEntity.getProperty("star").toString();
+                String comment = typeEntity.getProperty("comment").toString();
+                String name = typeEntity.getProperty("name").toString();
+                String link = typeEntity.getProperty("link").toString();
+                record1.put("key", key);
+                record1.put("val", keyValue);
+                record1.put("date", date);
+                record1.put("star", star);
+                record1.put("comment", comment);
+                record1.put("name", name);
+                record1.put("link", link);
+            }
             obj11.add(record1);
+            typeEntity.setProperty("imported", "Y");
+            datastore.put(typeEntity);
         }
+    }
+
+    private String getGMT7(Date date) {
+        DateFormat gmtFormat = new SimpleDateFormat();
+        TimeZone gmtTime = TimeZone.getTimeZone("GMT+7");
+        gmtFormat.setTimeZone(gmtTime);
+        return date.toString();
     }
 
     private String replace(String inp) {

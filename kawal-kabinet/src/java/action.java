@@ -114,6 +114,7 @@ public class action extends HttpServlet {
                         userTable.setProperty("admin", admin);
                         userTable.setProperty("icw", "N");
                     }
+                    userTable.setProperty("imported", "N");
                     datastore.put(userTable);
                 } else {
                     for (Entity userTable : userTables) {
@@ -234,7 +235,6 @@ public class action extends HttpServlet {
                 String name = userAccount.get("name").toString();
                 String link = userAccount.get("link").toString();
                 postData11("AlasanStarLike", "id", id, star, link, name);
-
                 record.put("status", "OK");
             } catch (Exception e) {
                 record.put("status", "error");
@@ -374,7 +374,7 @@ public class action extends HttpServlet {
                     String id = AlasanStar.getProperty("user").toString();
                     //DateTime dateTime = AlasanStar.getProperties().getDateTimeValue();
                     Date time = (Date) AlasanStar.getProperty("date");
-                    String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
+                    String date = time.toString();//AlasanStar.getProperty("date").toString();
                     String star = AlasanStar.getProperty("star").toString();
                     String comment = AlasanStar.getProperty("comment").toString();
                     comment = comment.replaceAll("\n", "<br/>");
@@ -503,7 +503,7 @@ public class action extends HttpServlet {
                     LinkedHashMap record1 = new LinkedHashMap();
                     String id = AlasanStar.getProperty("user").toString();
                     Date time = (Date) AlasanStar.getProperty("date");
-                    String date = time.toLocaleString();//AlasanStar.getProperty("date").toString();
+                    String date = time.toString();//AlasanStar.getProperty("date").toString();
                     String star = AlasanStar.getProperty("star").toString();
                     String comment = AlasanStar.getProperty("comment").toString();
                     comment = comment.replaceAll("\n", "<br/>");
@@ -656,6 +656,7 @@ public class action extends HttpServlet {
                 usulanCalon.setProperty("date", date);
                 usulanCalon.setProperty("usulan", usulan);
                 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+                usulanCalon.setProperty("imported", "N");
                 datastore.put(usulanCalon);
                 record.put("status", "OK");
             } catch (Exception e) {
@@ -797,7 +798,6 @@ public class action extends HttpServlet {
                 }
 
                 if (!found) {
-
                     Date date = new Date();
                     Entity psosisiEntity = new Entity("posisi", typeKey);
                     psosisiEntity.setProperty("user", id);
@@ -818,6 +818,7 @@ public class action extends HttpServlet {
                     } else {
                         psosisiEntity.setProperty("reviewed", "N");
                     }
+                    psosisiEntity.setProperty("imported", "N");
                     datastore.put(psosisiEntity);
                 }
 
@@ -1134,6 +1135,7 @@ public class action extends HttpServlet {
                     } else {
                         psosisiEntity.setProperty("reviewed", "N");
                     }
+                    psosisiEntity.setProperty("imported", "N");
                     datastore.put(psosisiEntity);
                 }
 
@@ -1276,28 +1278,18 @@ public class action extends HttpServlet {
             AlasanStar.setProperty("date", date);
             AlasanStar.setProperty("star", val);
             AlasanStar.setProperty("link", link);
+            AlasanStar.setProperty("imported", "N");
             datastore.put(AlasanStar);
-        } /*else {
-         for (Entity AlasanStar : AlasanStars) {
-         AlasanStar.setProperty("user", user);
-         AlasanStar.setProperty("date", date);
-         AlasanStar.setProperty("star", val);
-         AlasanStar.setProperty("link", link);
-         datastore.put(AlasanStar);
-         }
-
-         }*/
-
+        } 
     }
     
      private void postData11(String table, String key, String keyVal, String val, String link, String user) {
-        System.out.println(keyVal);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Key guestbookKey = KeyFactory.createKey(key, keyVal);
         Filter linkFilter = new FilterPredicate("link", FilterOperator.EQUAL, link);
         // Run an ancestor query to ensure we see the most up-to-date
         // view of the Greetings belonging to the selected Guestbook.
-        Query query = new Query(table, guestbookKey).setFilter(linkFilter).addSort("date", Query.SortDirection.DESCENDING);
+        Query query = new Query(table, guestbookKey).setFilter(linkFilter);
         List<Entity> AlasanStars = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(1));
         Date date = new Date();
 
@@ -1307,18 +1299,9 @@ public class action extends HttpServlet {
             AlasanStar.setProperty("date", date);
             AlasanStar.setProperty("star", val);
             AlasanStar.setProperty("link", link);
+            AlasanStar.setProperty("imported", "N");
             datastore.put(AlasanStar);
-        } /*else {
-         for (Entity AlasanStar : AlasanStars) {
-         AlasanStar.setProperty("user", user);
-         AlasanStar.setProperty("date", date);
-         AlasanStar.setProperty("star", val);
-         AlasanStar.setProperty("link", link);
-         datastore.put(AlasanStar);
-         }
-
-         }*/
-
+        } 
     }
 
     private void postData2(String name, String dept, String namaCalon, String star, String comment, String id, String table, String key, String keyVal, String link) {
@@ -1339,6 +1322,7 @@ public class action extends HttpServlet {
             AlasanStar.setProperty("name", name);
             AlasanStar.setProperty("namaCalon", namaCalon);
             AlasanStar.setProperty("link", link);
+            AlasanStar.setProperty("imported", "N");
             datastore.put(AlasanStar);
         }
     }
