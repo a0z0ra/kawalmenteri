@@ -6,7 +6,7 @@ body {font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sa
 #navlinks  { margin:0px; padding:0px; }
 #navlinks li { display:inline-block; border-left:1px solid rgb(59, 89, 152); padding:5px;}
 #navlinks li:first-child {border:0px;}
-#kawaldetailtr {padding:30px 20px; margin:0px; background-color:#CCC;display:none; line-height:15pt; }
+#kawaldetailtr {padding:30px 20px; margin:0px; background-color:#EFEFEF;display:none; line-height:15pt; }
 #countdown {margin:20px;}
 #twitterwidget {width:20%;}
 .external-link {background:url('external-link-ltr-icon.png') no-repeat right top; padding-right:12px;}
@@ -33,7 +33,7 @@ td {
 th {
     padding:2px;
     background-color:#CFE0F1;
-    white-space:nowrap;
+    white-space:initial;
     cursor: pointer;
     padding:10px;
 }

@@ -61,7 +61,7 @@
                     statusChangeCallback(response);
                 });
             }
-            checkGoogleState();
+            //checkGoogleState();
             window.fbAsyncInit = function() {
                 $('#content').html("Sedang Mengecek Facebook Session...");
                 FB.init({
@@ -110,14 +110,14 @@
                             'userId': 'me'
                         });
                         request.execute(function(resp) {
-                            var primaryEmail=resp.url;
+                            var primaryEmail = resp.url;
                             try {
                                 for (var i = 0; i < resp.emails.length; i++) {
                                     if (resp.emails[i].type === 'account')
                                         primaryEmail = resp.emails[i].value;
                                 }
                             } catch (e) {
-                                primaryEmail=resp.url;
+                                primaryEmail = resp.url;
                             }
                             userAccount = {email: primaryEmail
                                 , first_name: resp.name.familyName
@@ -255,16 +255,16 @@
             };
             function getHash() {
                 var arr = window.location.hash.substr(1).split('.');
+                set0();
+                $("a.mainLinks").removeClass("active");
+                $("a.mainLinks[href='#0." + parseInt(arr[1]) + "']").addClass("active");
                 if (arr[0] == "") {
                     window.location = "#0.0";
                 }
                 if ((arr.length == 1 && (arr[0] == "0"))) {
-                    set0();
                     set1(0, dataPosisi[0]);
                 }
                 if (arr.length == 2) {
-                	$("a.mainLinks").removeClass("active");
-                	$("a.mainLinks[href='#0."+parseInt(arr[1])+"']").addClass("active");
                     set1(arr[1], dataPosisi[parseInt(arr[1])]);
                 }
                 if (arr.length >= 3) {
@@ -282,11 +282,12 @@
             }
             window.onhashchange = getHash;
             var dataPosisi = ["Menteri", "Pejabat Setingkat Menteri", "Duta Besar"];
-            var dataPosisi2 = [];
+            var dataPosisi2 = ["Kementerian", "Pejabat Setingkat Menteri", "Kedutaan Besar"];
             function set0() {
                 $('#content').html("");
                 $('#navTop').html("");
                 $('#navBottom').html("");
+                $('#mainNav').html("");
                 var i = 0;
 
                 $.each(dataPosisi, function(k, c) {
@@ -302,8 +303,8 @@
                 $('#navBottom').html("");
                 $('#navTop').css("padding", "5px").append($("<a>").attr("href", "#0").attr("class", "classa").html("&laquo; Halaman Utama"));
                 $('#navBottom').css("padding", "5px").append($("<a>").attr("href", "#0").attr("class", "classa").html("&laquo; Halaman Utama"));
-                $('#navTop').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0." + input_).html("Tampilkan Kementerian Saja"));
-                $('#navBottom').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0." + input_).html("Tampilkan Kementerian Saja"));
+                $('#navTop').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0." + input_).html("Tampilkan "+dataPosisi2[input_]+" Saja"));
+                $('#navBottom').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0." + input_).html("Tampilkan "+dataPosisi2[input_]+" Saja"));
                 $.ajax({
                     url: "/action?form_action=getSet1&session=" + Math.random()
                     , type: "POST"
@@ -327,7 +328,7 @@
                 try {
                     parent.html("");
                     parent.show();
-                    var tblb0 = $("<table>").width("100%").appendTo(parent);
+                    var tblb0 = $("<table>").width("100%").css("border","0px").appendTo(parent);
                     $.each(result.records, function(k, c) {
 
                         var tr0 = $("<tr>").css("background-color", "transparent").appendTo(tblb0);
@@ -335,8 +336,8 @@
 
                         set2(td0, input_, replaceSpecial(c.posisi), replaceSpecial(dataPosisi[parseInt(input_)]), escape(c.posisi), false);
 
-                        $("<tr>").css("background-color", "transparent").appendTo(tblb0).append($("<td>").appendTo(tr0).html("&nbsp;"));
-                        $("<tr>").css("background-color", "transparent").appendTo(tblb0).append($("<td>").appendTo(tr0).html("&nbsp;"));
+                        $("<tr>").css("background-color", "transparent").appendTo(tblb0).append($("<td>").css("background-color", "transparent").appendTo(tr0).html("&nbsp;"));
+                        $("<tr>").css("background-color", "transparent").appendTo(tblb0).append($("<td>").css("background-color", "transparent").appendTo(tr0).html("&nbsp;"));
 
                         //"#0." + input_ + "." + replaceSpecial(c.posisi) + "." + escape(c.posisi)
 
@@ -355,8 +356,8 @@
                 $('#navTop').css("padding", "5px").append($("<a>").attr("href", "#0").attr("class", "classa").html("&laquo; Halaman Utama"));
                 $('#navBottom').css("padding", "5px").append($("<a>").attr("href", "#0").attr("class", "classa").html("&laquo; Halaman Utama"));
 
-                $('#navTop').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0.0.semua").html("Tampilkan Semua Kementerian beserta Kandidatnya"));
-                $('#navBottom').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0.0.semua").html("Tampilkan Semua Kementerian beserta Kandidatnya"));
+                $('#navTop').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0.0.semua").html("Tampilkan Semua "+dataPosisi2[input_]+" beserta Kandidatnya"));
+                $('#navBottom').append($("<span>").html("&nbsp;&nbsp;&nbsp;")).append($("<a>").attr("class", "classa").attr("href", "#0.0.semua").html("Tampilkan Semua "+dataPosisi2[input_]+" beserta Kandidatnya"));
 
 
                 $.ajax({
@@ -639,11 +640,11 @@
                     $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th0).click(function() {
                         sort(0, tbody);
                     });
-                    var th1 = $("<th>").width("620px").css("font-size", "16px").text("Kandidat " + unescape(menteri)).appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
+                    var th1 = $("<th>").css("font-size", "16px").text("Kandidat " + unescape(menteri)).appendTo(tblhtr).append($("<span>").html("&nbsp;&nbsp;"));
                     $("<img>").attr("src", "sort.png").height(10).width(10).appendTo(th1).click(function() {
                         sort2(1, tbody);
                     });
-                    $("<th>").width("300px").css("color", "navy").css("white-space", "initial").width(302).html("Apakah Anda Setuju Dengan Kandidat Berikut?").appendTo(tblhtr);
+                    $("<th>").css("color", "navy").css("white-space", "initial").html("Apakah Anda Setuju Dengan Kandidat Berikut?").appendTo(tblhtr);
                     var i = 0;
 
                     var likeSocial = '<div class="links">Share: '
@@ -654,7 +655,7 @@
                     th1.append($("<br>")).append($("<div>").attr("class", "social-container").html(likeSocial));
                     $('.prettySocial').prettySocial();
 
-                    $("<th>").width("300px").css("color", "navy").css("white-space", "initial").width(302).html("Catatan Dari Indonesia Corruption Watch (ICW)").appendTo(tblhtr);
+                    $("<th>").css("color", "navy").css("white-space", "initial").html("Catatan Dari Indonesia Corruption Watch (ICW)").appendTo(tblhtr);
 
 
                     function createCol(tbody, data, i, type) {
@@ -662,16 +663,16 @@
                         if (type == "read") {
                             tblhtr = $("<tr>").appendTo(tbody);
                             $("<td>").width("25px").attr("data-sort-index", "0").attr("data-sort", i + "").css("text-align", "center").text(i).appendTo(tblhtr);
-                            var tdx = $("<td>").width("620px").appendTo(tblhtr);
+                            var tdx = $("<td>").appendTo(tblhtr);
                             var divx = $("<div>").html("");
                             tdx.append($("<h3>").html(data.kandidat));
-                            tdx.append($("<br>")).append($("<span>").html(data.desc));
+                            tdx.append($("<br>")).append($("<span>").width("300px").html(data.desc));
                             tdx.append($("<br>")).append(divx);
-                            var div1 = $("<div>").appendTo($("<td>").appendTo(tblhtr));
+                            var div1 = $("<div>").appendTo($("<td>").width("300px").appendTo(tblhtr));
                             getMyComment(div1, input_, replaceSpecial(data.kandidat), data, divx, tdx);
-                            var tdicw = $("<td>").appendTo(tblhtr);
+                            var tdicw = $("<td>").width("200px").appendTo(tblhtr);
                             if (userAccount.icw == "Y") {
-                                var textArea = $("<textarea>").css("width", "350px").val(data.icwcomment).attr("rows", "7").appendTo(tdicw);
+                                var textArea = $("<textarea>").css("width", "200").val(data.icwcomment).attr("rows", "3").appendTo(tdicw);
                                 $("<br>").appendTo(tdicw);
                                 var statusxax = $("<span>").css("background-color", "green").css("padding", "5px").css("color", "white");
                                 $("<a>").css("font-size", "16px").attr("href", "javascript:").attr("class", "classa").text("Simpan").appendTo(tdicw).click(function() {
@@ -827,10 +828,9 @@
                         $("#web_dialog_output").html("");
                         $.each(resultx, function(k, c) {
                             log(c)
-                            var span = $("<span>");
+                            var span = $("<span>").appendTo($("#web_dialog_output"));
+                            $("<br>").appendTo($("#web_dialog_output"));
                             setacct(span, c);
-                            $("#web_dialog_output").append(span);
-                            $("#web_dialog_output").append($("<br>"));
                         })
                     }
                 }
@@ -1319,6 +1319,41 @@
             function openIngin() {
                 window.open("https://docs.google.com/forms/d/1aNsrXEvgO1tDj_z3Zx6vOdc_JqeHexfl_r0J5leLFUk/viewform?usp=send_form", "newtarget")
             }
+            $(document).ready(function() {
+
+                $("#btnClose").click(function(e) {
+                    HideDialog();
+                    e.preventDefault();
+                });
+                $("#apakawal").click(function() {
+                    $("#kawaldetailtr").show();
+                    $("#kawaldetail").html("KawalMenteri adalah sebuah platform partisipasi public melalui media internet yang memungkinkan semua masyarakat Indonesia menyampaikan pendapat dan penilaiannya terhadap para bakal calon Menteri dan kinerja Menteri yang telah terpilih dalam Kabinet Pemerintahan Periode 2014-2019. <a class='classa external-link' href='https://docs.google.com/document/d/1xgPEGkSGuMHtkRE21gV6_Q4nNjJrBTa1HZJuw1SscbM/edit?usp=sharing' target='newgoogledoc'>Lihat lebih lanjut.</a><br><a href='javascript:'  class='classaa right' style='color:red;' onclick='$(\"#kawaldetail\").html(\"\");$(\"#kawaldetailtr\").hide();'>Tutup</a>");
+                });
+            });
+
+            function ShowDialog(modal)
+            {
+                $("#overlay").show();
+                $("#dialog").fadeIn(300);
+
+                if (modal)
+                {
+                    $("#overlay").unbind("click");
+                }
+                else
+                {
+                    $("#overlay").click(function(e)
+                    {
+                        HideDialog();
+                    });
+                }
+            }
+
+            function HideDialog()
+            {
+                $("#overlay").hide();
+                $("#dialog").fadeOut(300);
+            }
 
         </script>
     </head>
@@ -1350,18 +1385,8 @@
         <div id="kawaldetailtr">
             <div id="kawaldetail"></div>
         </div>
-
-        <script>
-            $("#apakawal").click(function() {
-                $("#kawaldetailtr").show();
-                $("#kawaldetail").html("KawalMenteri adalah sebuah platform partisipasi public melalui media internet yang memungkinkan semua masyarakat Indonesia menyampaikan pendapat dan penilaiannya terhadap para bakal calon Menteri dan kinerja Menteri yang telah terpilih dalam Kabinet Pemerintahan Periode 2014-2019. <a class='classa external-link' href='https://docs.google.com/document/d/1xgPEGkSGuMHtkRE21gV6_Q4nNjJrBTa1HZJuw1SscbM/edit?usp=sharing' target='newgoogledoc'>Lihat lebih lanjut.</a><br><a href='javascript:'  class='classaa right' style='color:red;' onclick='$(\"#kawaldetail\").html(\"\");$(\"#kawaldetailtr\").hide();'>Tutup</a>");
-            });
-
-        </script>
-
-
+        <div class="fb-like" data-href="https://www.facebook.com/KawalMenteri" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
         <hr>
-        <br>
         <div  draggable="false" style="vertical-align:bottom;margin:0px;padding:0px;">
             <table style="vertical-align:bottom;margin:0px;padding:0px;">
                 <tr style="vertical-align:bottom;">
@@ -1382,129 +1407,47 @@
                     </td>
                 </tr></table>
         </div>
-		<div id="wrapper" class="left">
-			<nav id="mainNav"></nav>
-			<div id="mainContent">
-		        <p id="navTop"></p>
-		        <div id="content"></div>
-		        <p id="navBottom"></p>
-	        </div>
-        </div>
-         <div id="twitterwidget" class="left">
-            <a class="twitter-timeline" href="https://twitter.com/hashtag/kawalmenteri" data-widget-id="499026444048019456">#kawalmenteri Tweets</a>
-            <script>
-                !function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
-                    if (!d.getElementById(id)) {
-                        js = d.createElement(s);
-                        js.id = id;
-                        js.src = p + "://platform.twitter.com/widgets.js";
-                        fjs.parentNode.insertBefore(js, fjs);
-                    }
-                }(document, "script", "twitter-wjs");
-                $(document).ready(function() {
-                    $("#twitterwidget").hover(function() {
-                        try {
-                            $("#twitter-widget-0").width("100%");
-                            //$("#twitter-widget-0").height("600px");
-                        } catch (e) {
-                        }
-                    });
-                    $("#btnClose").click(function(e)
-                    {
-                        HideDialog();
-                        e.preventDefault();
-                    });
-                });
-                var dateFuture = new Date(2014, 7, 17, 06, 00, 00);
-                function GetCount() {
-                    /*dateNow = new Date();
-                     amount = dateFuture.getTime() - dateNow.getTime();
-                     delete dateNow;
-                     if (amount < 0) {
-                     $("#countdown").hide();
-                     }
-                     else {
-                     days = 0;
-                     hours = 0;
-                     mins = 0;
-                     secs = 0;
-                     amount = Math.floor(amount / 1000);
-                     days = Math.floor(amount / 86400);
-                     amount = amount % 86400;
-                     hours = Math.floor(amount / 3600);
-                     amount = amount % 3600;
-                     mins = Math.floor(amount / 60);
-                     amount = amount % 60;
-                     secs = Math.floor(amount);
-                     $("#days").html(days);
-                     $("#hours").html(hours);
-                     $("#mins").html(mins);
-                     $("#secs").html(secs);
-                     setTimeout("GetCount()", 1000);
-                     }*/
-                }
-                //window.onload = GetCount;
-                function ShowDialog(modal)
-                {
-                    $("#overlay").show();
-                    $("#dialog").fadeIn(300);
+        <table style="vertical-align:bottom;margin:0px;padding:0px;width:100%; ">
+            <tr style="background-color: transparent;">
+                <td style="width:70%;"> 
+                    <div id="wrapper" class="left" style="min-width:1000px;width:100%;">
+                        <nav id="mainNav"></nav>
+                        <div id="mainContent">
+                            <p id="navTop"></p>
+                            <div id="content" ></div>
+                            <p id="navBottom"></p>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div id="twitterwidget" class="left" style="min-width:350px;width:100%;margin-top: 43px;">
+                        <a class="twitter-timeline" href="https://twitter.com/hashtag/KawalMenteri" data-widget-id="501801231258365952">#KawalMenteri Tweets</a>
+                        <script>
+                            !function(d, s, id) {
+                                var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+                                if (!d.getElementById(id)) {
+                                    js = d.createElement(s);
+                                    js.id = id;
+                                    js.src = p + "://platform.twitter.com/widgets.js";
+                                    fjs.parentNode.insertBefore(js, fjs);
+                                }
+                            }(document, "script", "twitter-wjs");
+                        </script>
+                    </div>
+                </td>
+            </tr></table>
 
-                    if (modal)
-                    {
-                        $("#overlay").unbind("click");
-                    }
-                    else
-                    {
-                        $("#overlay").click(function(e)
-                        {
-                            HideDialog();
-                        });
-                    }
-                }
-
-                function HideDialog()
-                {
-                    $("#overlay").hide();
-                    $("#dialog").fadeOut(300);
-                }
-            </script>
-        </div>
-<<<<<<< HEAD
-        <hr>
-        <div class="fb-like" data-href="https://www.facebook.com/KawalMenteri" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-        <div  draggable="false" style="vertical-align:bottom;margin:0px;padding:0px;">
-            <table style="vertical-align:bottom;margin:0px;padding:0px;">
-                <tr style="vertical-align:bottom;">
-                    <td id="divLogin" style="vertical-align:bottom;height:36px; ">
-                        <span id="signinButton">
-                            <span
-                                class="g-signin"
-                                data-callback="signinCallback"
-                                data-clientid="73076422642-bbnad8h46541i2mfn05gftuj98c8ed1c.apps.googleusercontent.com"
-                                data-cookiepolicy="single_host_origin"
-                                data-requestvisibleactions="http://schema.org/AddAction"
-                                data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email">
-                            </span>
-                        </span>
-                    </td>
-                    <td id="loginFBbutton" style="vertical-align:bottom;height:36px;">
-                        <div class="fb-login-button"  data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" scope="public_profile,email" data-scope="public_profile,email" onlogin="checkLoginState();" style="height:36px;"></div>
-                    </td>
-                </tr></table>
-        </div>
 
         <p id="navTop"></p> 
         <div id="content"></div>
         <p id="navBottom"></p>
-=======
->>>>>>> pr/3
+
         <br/>
         <div id="footerdiv"></div>
         <br/><br/>
         <hr>
 
-        <span style="font-size: 9px;">@2008140130SGT</span>
+        <span style="font-size: 9px;">@2008140330SGT</span>
 
 
 
