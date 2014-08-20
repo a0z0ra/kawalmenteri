@@ -14,7 +14,7 @@
   font-weight: normal;
   speak: none;
   display: inline-block;
-  text-decoration: inherit;
+  text-decoration: none;
   width: 1em;
   margin-right: .2em;
   text-align: center;
@@ -38,39 +38,71 @@
 	ol {margin-left:15px;}
 	div { font-size:10pt;}
 	.count {font-weight:bold;}
-	.item {width:20%; background:white; margin:20px 20px 0 0; display:inline-block; vertical-align:top}
+	.item {background:white; display:inline-block; margin-bottom:20px; vertical-align:top; -webkit-column-break-inside: avoid;
+	-moz-column-break-inside: avoid;
+	column-break-inside: avoid;
+	box-shadow: 2px 2px rgba(0, 0, 0, 0.2); border-radius:5px; overflow:hidden;}
 	.item img {width:100%; padding:0px;}
 	.item > * {padding:10px;}
 	.item > div {display:table-cell; vertical-align:top;}
+	.item .name {text-transform:capitalize}
 	.item .desc {width:75%;}
 	.item .vote {padding:0px;}
 	.item .vote > div {display:block;margin:0 0 20px;}
-	.item .vote a {display:table-cell; vertical-align:middle}
+	.item .vote a {display:table-cell; padding-right:2px;vertical-align:middle}
 	.item.usul {border:1px dashed #999; vertical-align:top;}
 	.item.usul a { font-size:2em; display:block}
 	.item [class^="icon-"]:before, .item [class*=" icon-"]:before {font-size:200%;}
-	.item .count {font-weight:bold;padding-right:10px;}
+	.item .count {font-weight:bold;}
 	.item [class^="icon-"] {padding:5px;}
-	.mini_popup {background:#DDD; border:1px solid #999; padding:10px; position:absolute; width:23%}
+	#columns {-webkit-column-count: 3;
+	-webkit-column-gap: 20px;
+	-webkit-column-fill: auto;
+	-moz-column-count: 3;
+	-moz-column-gap: 20px;
+	-moz-column-fill: balance;
+	column-count: 3;
+	column-gap: 15px;
+	column-fill: auto;}
+	.mini_popup {background:#DDD; box-shadow:2px 2px 2px #999; padding:10px; position:absolute; width:320px; max-height:200px; overflow:auto; font-size:9pt; display:none}
+	#list_komentar li:first-child {margin-top:0px;}
+	#list_komentar li {margin-top:5px;}
 	.mini_popup [class^="icon-"] {padding:2px 5px;}
+	.mini_popup:before {content:""; border-top:10px solid transparent; border-bottom:10px solid #ddd;border-right:10px solid transparent; border-left:10px solid transparent;position:absolute;top:-20px;left:0px;}
 	#komentar > * {display:block; font-size:small;}
 	#komentar textarea {width:100%;}
 	small {font-size:75%;}
 	.close {position:absolute; top:0; right:2px; cursor:pointer}
+
+	@media (min-width: 960px) {
+		#columns {
+			-webkit-column-count: 4;
+			-moz-column-count: 4;
+			column-count: 4;
+		}
+	}
+
+	@media (min-width: 1100px) {
+		#columns {
+			-webkit-column-count: 5;
+			-moz-column-count: 5;
+			column-count: 5;
+		}
+	}
 </style>
 <body>
 <h1>Kandidat Menteri Komunikasi dan Informatika</h1>
 <div id="wrapper">
-<div class="item">
-	<img src="http://www.ebizzasia.com/images/ed09-cover-budi-raharjo.jpg"/>
-	<h2><a href="#" class="name">Budi Rahardjo, Ir. MSc, PhD</a></h2>
-	<div class="desc">Umur 52 tahun, lulusan PhD dari Manitoba, Canada, merupakan pendiri .ID dan ID-CERT yang merupakan CERT pertama di Indonesia serta penggagas Bandung H</div>
+	<div id="columns">
+<div class="item kandidat">
+	<h2><a href="#" class="name"></a></h2>
+	<div class="desc"></div>
 	<div class="vote">
 		<div class="yes"><a href="#" class="count">9999</a> <a href="#" class="icon-thumbs-up">Setuju</a></div>
 		<div class="no"><a href="#" class="count">9999</a><a href="#" class="icon-thumbs-down">Tidak Setuju</a></div>
 	</div>
 </div>
-<div class="item">
+<!--div class="item">
 	<img src="http://www.mastel.or.id/?q=files/imagecache/thumb_profil_foto_detail/files/profil/Betti_A_0.jpg"/>
 	<h2><a href="#" class="name">Betti Alisjahbana</a></h2>
 	<div class="desc">Umur 54 tahun adalah seorang wanita pertama menjadi Direktur Utama IBM Asia Pasifik</div>
@@ -78,6 +110,7 @@
 		<div class="yes"><a href="#" class="count">9999</a> <a href="#" class="icon-thumbs-up selected">Setuju</a></div>
 		<div class="no"><a href="#" class="count">9999</a><a href="#" class="icon-thumbs-down">Tidak Setuju</a></div>
 	</div>
+</div-->
 </div>
 <div class="item usul">
 	<a href="#" class="l_usul">+ Usulkan Kandidat Baru</a>
@@ -87,10 +120,10 @@
 	<a class="close">[X]</a>
 	<ol>
 		<li>
-			<strong>FB Username</strong>
-			<span>setuju</span>
+			<strong><a class="name" href="#" target="_blank"></a></strong>
+			<span class="comment"></span>
 			<br/>
-			<small>Aug 19, 2014 4:20:04 AM
+			<small><span class="date"></span>
 			<span class="yes"><span class="count">0</span> <a href="#" class="icon-thumbs-up">Setuju</a></span> -
 			<span class="no"><span class="count">0</span> <a href="#" class="icon-thumbs-down">Tidak Setuju</a></span>
 			</small>
@@ -101,21 +134,96 @@
 <div id="komentar" class="mini_popup">
 	<a class="close">[X]</a>
 	<strong>Masukkan komentar anda (opsional)</strong>
-	<textarea>Lalala</textarea>
+	<textarea></textarea>
 	<input type="submit" value="Simpan"/>
 	<span>Maks. 400 karakter</span>
 </div>
 <script>
 	$(function(){
-		$(".vote a[class^=icon-thumbs], .count").on("click", function(e){
-			e.preventDefault();
-			$( "count"==this.className?"#komentar":"#list_komentar" ).hide();
-			$( "count"==this.className?"#list_komentar":"#komentar" ).show().css("top", e.pageY+10).css("left", e.pageX+10);
+
+		function grabExtImage( key ) {
+			$.get("http://kawal.apps.rockybars.com/kawal/inspect/" + key, function(e){
+				var image = e.images[0];
+				if(undefined != image) $( "<img>" ).attr("src", image.url ).prependTo("#"+key);
+			});
+
+		}
+
+		var komentars;
+		$.get("./MenteriKomunikasidanInformatika.json", function(e){
+			var jsonObj = JSON.parse(e);
+			var menteris = jsonObj[0].child[0].child;
+			for( x in menteris ){
+				var menteri = menteris[x];
+				var kandidat = $(".kandidat:first").clone();
+				var nama = menteri.kandidat;
+				var key = nama.replace(/[\s\.,]/g,'');
+				kandidat.attr("id", key );
+				kandidat.find(".name").text( nama );
+				kandidat.find(".desc").text( menteri.desc );
+				grabExtImage( key );
+
+				komentars = menteri.childKomentar;
+				yes = [];
+				no = [];
+				for( y in komentars ){
+					komentar = komentars[y];
+					if( komentar.star > 0 ){
+						yes.push( komentar );
+					} else {
+						no.push( komentar );
+					}
+				}
+				kandidat.find(".vote .yes").data("json", yes);
+				kandidat.find(".vote .no").data("json", no);
+				if(yes.length == 0) kandidat.find(".vote .yes .count").removeAttr("href");
+				if(no.length == 0) kandidat.find(".vote .no .count").removeAttr("href");
+				kandidat.find(".vote .yes .count").text(yes.length);
+				kandidat.find(".vote .no .count").text(no.length);
+
+
+				kandidat.appendTo("#columns");
+			}
+			$(".kandidat:first").remove();
+			$(".usul").appendTo("#columns");
 		});
 
-		$(".close").on("click", function(e){
+		$("#wrapper").on("click", ".vote a[class^=icon-thumbs], .count", function(e){
+			e.preventDefault();
+			if("count"==this.className){
+				if( this.text == 0) return;
+				var listJson = $(this).parent().data("json");
+				$( "#list_komentar ol li:not(:first)" ).remove();
+				for( z in listJson ){
+					var komentar = $( "#list_komentar li:first" ).clone();
+					komentar.find(".name").text(listJson[z].name);
+					komentar.find(".name").attr("href", listJson[z].link);
+					komentar.find(".comment").text(listJson[z].comment);
+					komentar.find(".date").text(listJson[z].date);
+
+					komentar.appendTo("#list_komentar ol");
+				}
+				$( "#komentar" ).hide();
+
+				$( "#list_komentar li:first" ).remove();
+				$( "#list_komentar" ).show().css("top", e.pageY+10).css("left", e.pageX-10);
+			} else {
+				$( "#list_komentar" ).hide();
+				$( "#komentar" ).show().css("top", e.pageY+10).css("left", e.pageX-10);
+			}
+		});
+
+		$("body").on("click", "* .close", function(e){
 			$(this).parent().hide();
 		});
+
+		$(document).not(".mini_popup").click(function() {
+        	$(this).hide();
+   		});
+
+   		$(".mini_popup").focusout(function() {
+	        $(this).hide();
+	    });
 	});
 </script>
 </body>
